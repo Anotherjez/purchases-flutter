@@ -15,8 +15,6 @@
 .packages
 .pub/
 build/
-revenuecat_examples/**/pubspec.lock
-api_tester/**/pubspec.lock
 pubspec.lock
 
 # Android related
@@ -47,4 +45,3 @@ flutter
 
 # Cocoapods
 **/Podfile.lock
-

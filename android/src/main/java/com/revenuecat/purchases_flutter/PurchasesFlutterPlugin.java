@@ -39,6 +39,8 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import kotlin.UninitializedPropertyAccessException;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 
 /**
  * PurchasesFlutterPlugin
@@ -60,7 +62,7 @@ public class PurchasesFlutterPlugin implements FlutterPlugin, MethodCallHandler,
     private final Handler handler = new Handler(Looper.getMainLooper());
 
     private static final String PLATFORM_NAME = "flutter";
-    private static final String PLUGIN_VERSION = "8.6.0";
+    private static final String PLUGIN_VERSION = "8.10.5";
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {
@@ -173,6 +175,9 @@ public class PurchasesFlutterPlugin implements FlutterPlugin, MethodCallHandler,
             case "getAppUserID":
                 getAppUserID(result);
                 break;
+            case "getStorefront":
+                getStorefront(result);
+                break;
             case "restorePurchases":
                 restorePurchases(result);
                 break;
@@ -275,6 +280,10 @@ public class PurchasesFlutterPlugin implements FlutterPlugin, MethodCallHandler,
             case "setFirebaseAppInstanceID":
                 String firebaseAppInstanceID = call.argument("firebaseAppInstanceID");
                 setFirebaseAppInstanceID(firebaseAppInstanceID, result);
+                break;
+            case "setTenjinAnalyticsInstallationID":
+                String tenjinAnalyticsInstallationID = call.argument("tenjinAnalyticsInstallationID");
+                setTenjinAnalyticsInstallationID(tenjinAnalyticsInstallationID, result);
                 break;
             case "setOnesignalID":
                 String onesignalID = call.argument("onesignalID");
@@ -382,8 +391,13 @@ public class PurchasesFlutterPlugin implements FlutterPlugin, MethodCallHandler,
 
     private void setUpdatedCustomerInfoListener() {
         Purchases.getSharedInstance().setUpdatedCustomerInfoListener(customerInfo -> {
-            Map<String, Object> customerInfoMap = CustomerInfoMapperKt.map(customerInfo);
-            invokeChannelMethodOnUiThread(CUSTOMER_INFO_UPDATED, customerInfoMap);
+            CustomerInfoMapperKt.mapAsync(
+                    customerInfo,
+                    map -> {
+                        invokeChannelMethodOnUiThread(CUSTOMER_INFO_UPDATED, map);
+                        return Unit.INSTANCE;
+                    }
+            );
         });
     }
 
@@ -481,6 +495,16 @@ public class PurchasesFlutterPlugin implements FlutterPlugin, MethodCallHandler,
 
     private void getAppUserID(final Result result) {
         result.success(CommonKt.getAppUserID());
+    }
+
+    private void getStorefront(final Result result) {
+        CommonKt.getStorefront(new Function1<Map<String, ? extends Object>, Unit>() {
+            @Override
+            public Unit invoke(Map<String, ?> storefrontMap) {
+                result.success(storefrontMap);
+                return null;
+            }
+        });
     }
 
     private void restorePurchases(final Result result) {
@@ -609,6 +633,14 @@ public class PurchasesFlutterPlugin implements FlutterPlugin, MethodCallHandler,
 
     private void setFirebaseAppInstanceID(String firebaseAppInstanceId, final Result result) {
         SubscriberAttributesKt.setFirebaseAppInstanceID(firebaseAppInstanceId);
+        result.success(null);
+    }
+
+    private void setTenjinAnalyticsInstallationID(
+        String tenjinAnalyticsInstallationID,
+        final Result result
+    ) {
+        SubscriberAttributesKt.setTenjinAnalyticsInstallationID(tenjinAnalyticsInstallationID);
         result.success(null);
     }
 

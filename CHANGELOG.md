@@ -1,3 +1,271 @@
+## 8.10.5
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 14.0.2 (#1389) via RevenueCat Git Bot (@RCGitBot)
+  * [iOS 5.30.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.30.0)
+* [RENOVATE] Update build-dependencies (#1383) via RevenueCat Git Bot (@RCGitBot)
+
+### 🔄 Other Changes
+* Update workflows/issue-notifications.yml@v2 (#1387) via Josh Holtz (@joshdholtz)
+* Add GitHub Issue Action Ack (#1385) via Josh Holtz (@joshdholtz)
+
+## 8.10.4
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.38.1 (#1382) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 8.20.0](https://github.com/RevenueCat/purchases-android/releases/tag/8.20.0)
+
+### 🔄 Other Changes
+* Configure Renovate (#1376) via RevenueCat Git Bot (@RCGitBot)
+* Add `9.0.0-beta.3` to `CHANGELOG` (#1374) via Toni Rico (@tonidero)
+
+## 9.0.0-beta.3
+## RevenueCat SDK
+### 💥 Breaking Changes
+* Increased min Flutter SDK to 3.22.0 and Dart min SDK to 3.4.0
+* Remove freezed in favor of manually parsed models (#1368) via Toni Rico (@tonidero)
+  * This removed some APIs like `toJson`, `StoreTransaction.revenueCatIdentifier`
+  * This also modified our APIs to use WebPurchaseRedemptionResult. Now you will need to do:
+```
+WebPurchaseRedemptionResult result;
+switch (result) {
+  case WebPurchaseRedemptionSuccess(:final customerInfo):
+    // Handle successful redemption
+    break;
+  case WebPurchaseRedemptionError(:final error):
+    // Handle error in redemption
+    break;
+  case WebPurchaseRedemptionPurchaseBelongsToOtherUser():
+    // Handle case where the purchase belongs to another user
+    break;
+  case WebPurchaseRedemptionInvalidToken():
+    // Handle case where the token is invalid
+    break;
+  case WebPurchaseRedemptionExpired(:final obfuscatedEmail):
+    // Handle case where the redemption link has expired
+    break;
+};
+```
+
+### New Features
+* [Beta] Flutter Web support (#1237) via Toni Rico (@tonidero)
+
+In order to use Flutter Web, you need to create a new Web Billing project (See [docs](https://www.revenuecat.com/docs/web/web-billing/overview)), then configure the SDK with the provided API key, in the form of `rcb_xxx` or `rcb_sb_xxx`.
+
+Web functionality is currently limited. Supported functionality includes:
+- Configuration
+- Login/logout
+- Fetching Offerings
+- Fetching CustomerInfo
+- Purchasing Packages
+
+Currently unsupported functionality includes:
+- Setting attributes
+- Product operations (get products/purchase products).
+- Restoring purchases (Purchases can be restored using Web Billing's built-in mechanisms)
+
+Please check this out and contact us with any feedback!
+
+## 8.10.3
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.37.0 (#1369) via RevenueCat Git Bot (@RCGitBot)
+  * [iOS 5.29.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.29.0)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.36.1 (#1367) via RevenueCat Git Bot (@RCGitBot)
+  * [iOS 5.29.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.29.0)
+
+### 🔄 Other Changes
+* Update CHANGELOG with 9.0.0 betas (#1357) via Toni Rico (@tonidero)
+
+## 8.10.2
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.36.0 (#1361) via RevenueCat Git Bot (@RCGitBot)
+  * [iOS 5.28.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.28.1)
+  * [iOS 5.28.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.28.0)
+
+## 8.10.1
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.35.0 (#1358) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 8.19.2](https://github.com/RevenueCat/purchases-android/releases/tag/8.19.2)
+  * [Android 8.19.1](https://github.com/RevenueCat/purchases-android/releases/tag/8.19.1)
+  * [iOS 5.27.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.27.1)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.34.0 (#1355) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 8.19.2](https://github.com/RevenueCat/purchases-android/releases/tag/8.19.2)
+  * [Android 8.19.1](https://github.com/RevenueCat/purchases-android/releases/tag/8.19.1)
+  * [iOS 5.27.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.27.1)
+
+## 9.0.0-beta.2
+## RevenueCat SDK
+### 💥 Breaking Changes
+* Increased min Flutter SDK to 3.22.0 and Dart min SDK to 3.4.0
+
+### New Features
+* [Beta] Flutter Web support (#1237) via Toni Rico (@tonidero)
+
+In order to use Flutter Web, you need to create a new Web Billing project (See [docs](https://www.revenuecat.com/docs/web/web-billing/overview)), then configure the SDK with the provided API key, in the form of `rcb_xxx` or `rcb_sb_xxx`.
+
+Web functionality is currently limited. Supported functionality includes:
+- Configuration
+- Login/logout
+- Fetching Offerings
+- Fetching CustomerInfo
+- Purchasing Packages
+
+Currently unsupported functionality includes:
+- Setting attributes
+- Product operations (get products/purchase products).
+- Restoring purchases (Purchases can be restored using Web Billing's built-in mechanisms)
+
+Please check this out and contact us with any feedback!
+
+### Changes from previous beta
+- Fix `Store` type parsing issues in Web
+- Added all changes from major 8.7.5+
+
+## 8.10.0
+## RevenueCat SDK
+### ✨ New Features
+* Add `paddle` store (#1351) via Will Taylor (@fire-at-will)
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.33.0 (#1352) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 8.19.0](https://github.com/RevenueCat/purchases-android/releases/tag/8.19.0)
+  * [Android 8.18.0](https://github.com/RevenueCat/purchases-android/releases/tag/8.18.0)
+  * [iOS 5.26.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.26.0)
+  * [iOS 5.25.3](https://github.com/RevenueCat/purchases-ios/releases/tag/5.25.3)
+  * [iOS 5.25.2](https://github.com/RevenueCat/purchases-ios/releases/tag/5.25.2)
+  * [iOS 5.25.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.25.1)
+  * [iOS 5.25.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.25.0)
+
+## 8.9.0
+## RevenueCat SDK
+### ✨ New Features
+* Add `setTenjinAnalyticsInstallationID` API (#1347) via Toni Rico (@tonidero)
+
+## 8.8.1
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.32.0 (#1344) via RevenueCat Git Bot (@RCGitBot)
+  * [iOS 5.24.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.24.0)
+  * [iOS 5.23.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.23.0)
+
+### 🔄 Other Changes
+* Bump fastlane from 2.227.1 to 2.227.2 (#1338) via dependabot[bot] (@dependabot[bot])
+
+## 8.8.0
+## RevenueCat SDK
+### ✨ New Features
+* Add `storefront` API to obtain the country of the store account (#1335) via Toni Rico (@tonidero)
+
+## 8.7.5
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.29.1 (#1332) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 8.17.1](https://github.com/RevenueCat/purchases-android/releases/tag/8.17.1)
+  * [Android 8.17.0](https://github.com/RevenueCat/purchases-android/releases/tag/8.17.0)
+  * [iOS 5.22.2](https://github.com/RevenueCat/purchases-ios/releases/tag/5.22.2)
+  * [iOS 5.22.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.22.1)
+  * [iOS 5.22.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.22.0)
+
+### 🔄 Other Changes
+* Bump min supported versions and add tests for min SDK compatibility (#1328) via Toni Rico (@tonidero)
+
+## 9.0.0-beta.1
+## RevenueCat SDK
+### 💥 Breaking Changes
+* Increased min Flutter SDK to 3.22.0 and Dart min SDK to 3.4.0
+
+### New Features
+* [Beta] Flutter Web support (#1237) via Toni Rico (@tonidero)
+
+In order to use Flutter Web, you need to create a new Web Billing project (See [docs](https://www.revenuecat.com/docs/web/web-billing/overview)), then configure the SDK with the provided API key, in the form of `rcb_xxx` or `rcb_sb_xxx`.
+
+Web functionality is currently limited. Supported functionality includes:
+- Configuration
+- Login/logout
+- Fetching Offerings
+- Fetching CustomerInfo
+- Purchasing Packages
+
+Currently unsupported functionality includes:
+- Setting attributes
+- Product operations (get products/purchase products).
+- Restoring purchases (Purchases can be restored using Web Billing's built-in mechanisms)
+
+Please check this out and contact us with any feedback!
+
+## 8.7.4
+## RevenueCat SDK
+### 🐞 Bugfixes
+* Reverts version bumps done in f21e068 (#1327) via JayShortway (@JayShortway)
+
+### 🔄 Other Changes
+* Remove pubspec.lock from github (#1325) via Toni Rico (@tonidero)
+* Bump nokogiri from 1.18.4 to 1.18.8 (#1323) via dependabot[bot] (@dependabot[bot])
+
+## 8.7.3
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.28.1 (#1319) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 8.16.1](https://github.com/RevenueCat/purchases-android/releases/tag/8.16.1)
+  * [iOS 5.21.2](https://github.com/RevenueCat/purchases-ios/releases/tag/5.21.2)
+  * [iOS 5.21.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.21.1)
+
+### 🔄 Other Changes
+* Bump fastlane from 2.227.0 to 2.227.1 (#1317) via dependabot[bot] (@dependabot[bot])
+
+## 8.7.2
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.28.0 (#1315) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 8.16.0](https://github.com/RevenueCat/purchases-android/releases/tag/8.16.0)
+  * [iOS 5.21.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.21.0)
+  * [iOS 5.20.3](https://github.com/RevenueCat/purchases-ios/releases/tag/5.20.3)
+
+## 8.7.1
+## RevenueCat SDK
+### 🐞 Bugfixes
+* Fix API Tests (#1307) via Will Taylor (@fire-at-will)
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.26.1 (#1311) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 8.15.1](https://github.com/RevenueCat/purchases-android/releases/tag/8.15.1)
+  * [iOS 5.20.2](https://github.com/RevenueCat/purchases-ios/releases/tag/5.20.2)
+  * [iOS 5.20.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.20.1)
+
+## 8.7.0
+## RevenueCat SDK
+### ✨ New Features
+* Add `onPurchaseCancelled` handler to `PaywallView` and `PaywallFooterView` (#1296) via Jeffrey Bunn (@Jethro87)
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.26.0 (#1298) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 8.15.0](https://github.com/RevenueCat/purchases-android/releases/tag/8.15.0)
+  * [Android 8.14.3](https://github.com/RevenueCat/purchases-android/releases/tag/8.14.3)
+  * [Android 8.14.2](https://github.com/RevenueCat/purchases-android/releases/tag/8.14.2)
+  * [iOS 5.20.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.20.0)
+
+### 🔄 Other Changes
+* Bump nokogiri from 1.18.3 to 1.18.4 (#1299) via dependabot[bot] (@dependabot[bot])
+* Bump fastlane from 2.226.0 to 2.227.0 (#1294) via dependabot[bot] (@dependabot[bot])
+* Update fastlane plugin (#1293) via Toni Rico (@tonidero)
+* Bump json from 2.10.1 to 2.10.2 (#1291) via dependabot[bot] (@dependabot[bot])
+
+## 8.6.1
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.25.0 (#1290) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 8.14.1](https://github.com/RevenueCat/purchases-android/releases/tag/8.14.1)
+  * [Android 8.14.0](https://github.com/RevenueCat/purchases-android/releases/tag/8.14.0)
+  * [iOS 5.19.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.19.0)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.24.0 (#1287) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 8.14.1](https://github.com/RevenueCat/purchases-android/releases/tag/8.14.1)
+  * [Android 8.14.0](https://github.com/RevenueCat/purchases-android/releases/tag/8.14.0)
+  * [iOS 5.19.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.19.0)
+
+### 🔄 Other Changes
+* Increase android related versions in purchase_tester (#1281) via Cesar de la Vega (@vegaro)
+* Fix new Flutter version test issues (#1289) via Toni Rico (@tonidero)
+
 ## 8.6.0
 ## RevenueCat SDK
 ### 📦 Dependency Updates
