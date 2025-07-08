@@ -137,9 +137,17 @@ class Purchases {
   /// Sets up Purchases with your API key and an app user id.
   ///
   /// [PurchasesConfiguration] Object containing configuration parameters
+  ///
+  /// Note: On Windows, this provides basic functionality for development purposes.
+  /// Full RevenueCat integration is not available on Windows.
   static Future<void> configure(
     PurchasesConfiguration purchasesConfiguration,
   ) async {
+    if (defaultTargetPlatform == TargetPlatform.windows) {
+      debugPrint(
+          'purchases_flutter: Windows support is limited. Using simulated configuration.');
+    }
+
     var purchasesCompletedByToUse = PurchasesAreCompletedByType.revenueCat;
     var storeKitVersionToUse = purchasesConfiguration.storeKitVersion ??
         StoreKitVersion.defaultVersion;
@@ -584,8 +592,16 @@ class Purchases {
   /// was a problem restoring transactions. LogInResult holds a [CustomerInfo] object
   /// and a bool that can be used to know if a user has just been created for the first time.
   ///
-  /// [newAppUserID] The appUserID that should be linked to the currently user
+  /// [appUserID] The appUserID that should be linked to the currently user
+  ///
+  /// Note: On Windows, this provides basic functionality for development purposes.
+  /// Full RevenueCat integration is not available on Windows.
   static Future<LogInResult> logIn(String appUserID) async {
+    if (defaultTargetPlatform == TargetPlatform.windows) {
+      debugPrint(
+          'purchases_flutter: Windows support is limited. Using simulated response.');
+    }
+
     final result =
         await _channel.invokeMethod('logIn', {'appUserID': appUserID});
     final customerInfo = CustomerInfo.fromJson(
@@ -1210,8 +1226,10 @@ class Purchases {
         },
       );
 
-  static Future<WebPurchaseRedemption?> parseAsWebPurchaseRedemption(String urlString) async {
-    final bool result = await _channel.invokeMethod('isWebPurchaseRedemptionURL', {
+  static Future<WebPurchaseRedemption?> parseAsWebPurchaseRedemption(
+      String urlString) async {
+    final bool result =
+        await _channel.invokeMethod('isWebPurchaseRedemptionURL', {
       'urlString': urlString,
     });
     if (result) {
@@ -1221,11 +1239,13 @@ class Purchases {
     }
   }
 
-  static Future<WebPurchaseRedemptionResult> redeemWebPurchase(WebPurchaseRedemption webPurchaseRedemption) async {
+  static Future<WebPurchaseRedemptionResult> redeemWebPurchase(
+      WebPurchaseRedemption webPurchaseRedemption) async {
     final result = await _channel.invokeMethod('redeemWebPurchase', {
       'redemptionLink': webPurchaseRedemption.redemptionLink,
     });
-    return WebPurchaseRedemptionResult.fromJson(Map<String, dynamic>.from(result));
+    return WebPurchaseRedemptionResult.fromJson(
+        Map<String, dynamic>.from(result));
   }
 
   ///================================================================================

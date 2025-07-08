@@ -5,27 +5,53 @@
 #include <flutter/plugin_registrar_windows.h>
 
 #include <memory>
+#include <string>
 
-namespace purchases_flutter {
+namespace purchases_flutter
+{
 
-class PurchasesFlutterPlugin : public flutter::Plugin {
- public:
-  static void RegisterWithRegistrar(flutter::PluginRegistrarWindows *registrar);
+    class PurchasesFlutterPlugin : public flutter::Plugin
+    {
+    public:
+        static void RegisterWithRegistrar(flutter::PluginRegistrarWindows *registrar);
 
-  PurchasesFlutterPlugin();
+        PurchasesFlutterPlugin();
 
-  virtual ~PurchasesFlutterPlugin();
+        virtual ~PurchasesFlutterPlugin();
 
-  // Disallow copy and assign.
-  PurchasesFlutterPlugin(const PurchasesFlutterPlugin&) = delete;
-  PurchasesFlutterPlugin& operator=(const PurchasesFlutterPlugin&) = delete;
+        // Disallow copy and assign.
+        PurchasesFlutterPlugin(const PurchasesFlutterPlugin &) = delete;
+        PurchasesFlutterPlugin &operator=(const PurchasesFlutterPlugin &) = delete;
 
-  // Called when a method is called on this plugin's channel from Dart.
-  void HandleMethodCall(
-      const flutter::MethodCall<flutter::EncodableValue> &method_call,
-      std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result);
-};
+        // Called when a method is called on this plugin's channel from Dart.
+        void HandleMethodCall(
+            const flutter::MethodCall<flutter::EncodableValue> &method_call,
+            std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result);
 
-}  // namespace purchases_flutter
+    private:
+        // Method handlers
+        void HandleSetupPurchases(
+            const flutter::MethodCall<flutter::EncodableValue> &method_call,
+            std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result);
 
-#endif  // FLUTTER_PLUGIN_PURCHASES_FLUTTER_PLUGIN_H_
+        void HandleLogIn(
+            const flutter::MethodCall<flutter::EncodableValue> &method_call,
+            std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result);
+
+        void HandleGetAppUserID(
+            const flutter::MethodCall<flutter::EncodableValue> &method_call,
+            std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result);
+
+        // Utility methods
+        flutter::EncodableMap CreateEmptyCustomerInfo();
+        std::string GenerateRandomUserId();
+
+        // Private member variables
+        bool configured_ = false;
+        std::string api_key_;
+        std::string app_user_id_;
+    };
+
+} // namespace purchases_flutter
+
+#endif // FLUTTER_PLUGIN_PURCHASES_FLUTTER_PLUGIN_H_
