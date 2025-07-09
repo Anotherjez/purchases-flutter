@@ -2,6 +2,7 @@
 
 // This must be included before many other Windows headers.
 #include <windows.h>
+#include <winhttp.h>
 
 // For getPlatformVersion; remove unless needed for your plugin implementation.
 #include <VersionHelpers.h>
@@ -15,6 +16,10 @@
 #include <ctime>
 #include <iomanip>
 #include <cstdlib>
+#include <thread>
+#include <functional>
+
+#pragma comment(lib, "winhttp.lib")
 
 namespace purchases_flutter
 {
@@ -123,6 +128,12 @@ namespace purchases_flutter
             }
         }
 
+        if (apiKey.empty())
+        {
+            result->Error("invalid_arguments", "API key is required");
+            return;
+        }
+
         // Store configuration
         configured_ = true;
         api_key_ = apiKey;
@@ -137,7 +148,7 @@ namespace purchases_flutter
             app_user_id_ = appUserId;
         }
 
-        // For now, return success - will implement actual HTTP call later
+        // For now, just return success - we'll implement API call later
         result->Success();
     }
 
@@ -177,19 +188,42 @@ namespace purchases_flutter
             return;
         }
 
-        // Store the new app user ID
+        // Store the previous user ID to determine if this is a new user
         bool created = (app_user_id_ != newAppUserId);
         app_user_id_ = newAppUserId;
 
-        // Create a simulated CustomerInfo response
-        flutter::EncodableMap customerInfo = CreateEmptyCustomerInfo();
+        // Make actual API call to RevenueCat to create/update subscriber
+        // This is what RevenueCat's native SDKs do internally
+        std::string endpoint = "/subscribers/" + newAppUserId;
 
+        // Create JSON payload for subscriber update
+        std::string jsonPayload = "{\"app_user_id\":\"" + newAppUserId + "\",\"last_seen\":\"" + GetCurrentISODate() + "\"}";
+
+        // Create a shared pointer to the result for the async callback
+        auto resultPtr = std::make_shared<std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>>>(std::move(result));
+
+        MakeHttpRequest("POST", endpoint, jsonPayload, [this, resultPtr, created](bool success, const std::string &response)
+                        {
+      if (success) {
+        // Parse the response and create CustomerInfo
+        flutter::EncodableMap customerInfo = CreateCustomerInfoFromResponse(response);
+        
         // Create LogInResult
         flutter::EncodableMap logInResult;
         logInResult[flutter::EncodableValue("customerInfo")] = flutter::EncodableValue(customerInfo);
         logInResult[flutter::EncodableValue("created")] = flutter::EncodableValue(created);
 
-        result->Success(flutter::EncodableValue(logInResult));
+        (*resultPtr)->Success(flutter::EncodableValue(logInResult));
+      } else {
+        // Fallback to simulated response if API call fails
+        flutter::EncodableMap customerInfo = CreateEmptyCustomerInfo();
+        
+        flutter::EncodableMap logInResult;
+        logInResult[flutter::EncodableValue("customerInfo")] = flutter::EncodableValue(customerInfo);
+        logInResult[flutter::EncodableValue("created")] = flutter::EncodableValue(created);
+
+        (*resultPtr)->Success(flutter::EncodableValue(logInResult));
+      } });
     }
 
     void PurchasesFlutterPlugin::HandleGetAppUserID(
@@ -238,6 +272,44 @@ namespace purchases_flutter
         return customerInfo;
     }
 
+    flutter::EncodableMap PurchasesFlutterPlugin::CreateCustomerInfoFromResponse(const std::string &response)
+    {
+        // For now, we'll do basic JSON parsing manually
+        flutter::EncodableMap customerInfo = CreateEmptyCustomerInfo();
+
+        // Try to extract some basic information from the response
+        if (response.find("\"subscriber\"") != std::string::npos)
+        {
+            // Parse basic subscriber info
+            size_t userIdPos = response.find("\"original_app_user_id\"");
+            if (userIdPos != std::string::npos)
+            {
+                size_t valueStart = response.find("\"", userIdPos + 22);
+                size_t valueEnd = response.find("\"", valueStart + 1);
+                if (valueStart != std::string::npos && valueEnd != std::string::npos)
+                {
+                    std::string extractedUserId = response.substr(valueStart + 1, valueEnd - valueStart - 1);
+                    customerInfo[flutter::EncodableValue("originalAppUserId")] = flutter::EncodableValue(extractedUserId);
+                }
+            }
+
+            // Extract first seen date
+            size_t firstSeenPos = response.find("\"first_seen\"");
+            if (firstSeenPos != std::string::npos)
+            {
+                size_t valueStart = response.find("\"", firstSeenPos + 12);
+                size_t valueEnd = response.find("\"", valueStart + 1);
+                if (valueStart != std::string::npos && valueEnd != std::string::npos)
+                {
+                    std::string firstSeenDate = response.substr(valueStart + 1, valueEnd - valueStart - 1);
+                    customerInfo[flutter::EncodableValue("firstSeen")] = flutter::EncodableValue(firstSeenDate);
+                }
+            }
+        }
+
+        return customerInfo;
+    }
+
     std::string PurchasesFlutterPlugin::GenerateRandomUserId()
     {
         static const char chars[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -251,6 +323,130 @@ namespace purchases_flutter
         }
 
         return "$RCAnonymousID:" + result;
+    }
+
+    std::string PurchasesFlutterPlugin::GetRevenueCatApiUrl() const
+    {
+        return "https://api.revenuecat.com/v1/";
+    }
+
+    std::string PurchasesFlutterPlugin::PrepareAuthHeaders() const
+    {
+        return "Authorization: Bearer " + api_key_;
+    }
+
+    void PurchasesFlutterPlugin::MakeHttpRequest(
+        const std::string &method,
+        const std::string &endpoint,
+        const std::string &body,
+        std::function<void(bool success, const std::string &response)> callback)
+    {
+        std::thread([this, method, endpoint, body, callback]()
+                    {
+      HINTERNET hSession = nullptr;
+      HINTERNET hConnect = nullptr;
+      HINTERNET hRequest = nullptr;
+      
+      try {
+        // Initialize WinHTTP
+        hSession = WinHttpOpen(L"RevenueCat-Windows-SDK/1.0",
+                              WINHTTP_ACCESS_TYPE_DEFAULT_PROXY,
+                              WINHTTP_NO_PROXY_NAME,
+                              WINHTTP_NO_PROXY_BYPASS,
+                              0);
+        
+        if (!hSession) {
+          callback(false, "Failed to initialize HTTP session");
+          return;
+        }
+
+        // Connect to server
+        hConnect = WinHttpConnect(hSession, L"api.revenuecat.com", INTERNET_DEFAULT_HTTPS_PORT, 0);
+        if (!hConnect) {
+          callback(false, "Failed to connect to RevenueCat API");
+          return;
+        }
+
+        // Convert endpoint to wide string
+        std::wstring wEndpoint(endpoint.begin(), endpoint.end());
+        std::wstring wMethod(method.begin(), method.end());
+
+        // Create request
+        hRequest = WinHttpOpenRequest(hConnect,
+                                     wMethod.c_str(),
+                                     wEndpoint.c_str(),
+                                     nullptr,
+                                     WINHTTP_NO_REFERER,
+                                     WINHTTP_DEFAULT_ACCEPT_TYPES,
+                                     WINHTTP_FLAG_SECURE);
+
+        if (!hRequest) {
+          callback(false, "Failed to create HTTP request");
+          return;
+        }
+
+        // Set headers
+        std::string headers = "Content-Type: application/json\r\n";
+        headers += PrepareAuthHeaders() + "\r\n";
+        
+        std::wstring wHeaders(headers.begin(), headers.end());
+        WinHttpAddRequestHeaders(hRequest, wHeaders.c_str(), -1, WINHTTP_ADDREQ_FLAG_ADD);
+
+        // Send request
+        BOOL bResult = WinHttpSendRequest(hRequest,
+                                         WINHTTP_NO_ADDITIONAL_HEADERS,
+                                         0,
+                                         body.empty() ? WINHTTP_NO_REQUEST_DATA : (LPVOID)body.c_str(),
+                                         static_cast<DWORD>(body.length()),
+                                         static_cast<DWORD>(body.length()),
+                                         0);
+
+        if (!bResult) {
+          callback(false, "Failed to send HTTP request");
+          return;
+        }
+
+        // Wait for response
+        bResult = WinHttpReceiveResponse(hRequest, nullptr);
+        if (!bResult) {
+          callback(false, "Failed to receive HTTP response");
+          return;
+        }
+
+        // Read response
+        std::string response;
+        DWORD dwSize = 0;
+        do {
+          dwSize = 0;
+          if (!WinHttpQueryDataAvailable(hRequest, &dwSize)) {
+            callback(false, "Failed to query data availability");
+            return;
+          }
+
+          if (dwSize == 0) break;
+
+          std::vector<char> buffer(dwSize + 1);
+          DWORD dwDownloaded = 0;
+          if (!WinHttpReadData(hRequest, buffer.data(), dwSize, &dwDownloaded)) {
+            callback(false, "Failed to read response data");
+            return;
+          }
+
+          buffer[dwDownloaded] = '\0';
+          response += buffer.data();
+        } while (dwSize > 0);
+
+        callback(true, response);
+
+      } catch (...) {
+        callback(false, "Exception occurred during HTTP request");
+      }
+
+      // Cleanup
+      if (hRequest) WinHttpCloseHandle(hRequest);
+      if (hConnect) WinHttpCloseHandle(hConnect);
+      if (hSession) WinHttpCloseHandle(hSession); })
+            .detach();
     }
 
     // Implementation of the function expected by Flutter plugin system

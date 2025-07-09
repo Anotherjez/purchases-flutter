@@ -7,6 +7,8 @@
 
 #include <memory>
 #include <string>
+#include <thread>
+#include <functional>
 
 namespace purchases_flutter
 {
@@ -45,7 +47,11 @@ namespace purchases_flutter
 
         // Utility methods
         flutter::EncodableMap CreateEmptyCustomerInfo();
+        flutter::EncodableMap CreateCustomerInfoFromResponse(const std::string &response);
         std::string GenerateRandomUserId();
+
+        // HTTP methods for RevenueCat API
+        void CallRevenueCatAPI(const std::string &endpoint, const std::string &method, const std::string &data, std::function<void(bool, const std::string &)> callback);
 
         // Private member variables
         bool configured_ = false;

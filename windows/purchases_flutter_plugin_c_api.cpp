@@ -5,8 +5,9 @@
 #include "include/purchases_flutter/purchases_flutter_plugin.h"
 
 void PurchasesFlutterPluginRegisterWithRegistrar(
-    FlutterDesktopPluginRegistrarRef registrar) {
-  purchases_flutter::PurchasesFlutterPlugin::RegisterWithRegistrar(
-      flutter::PluginRegistrarManager::GetInstance()
-          ->GetRegistrar<flutter::PluginRegistrarWindows>(registrar));
+    FlutterDesktopPluginRegistrarRef registrar)
+{
+    purchases_flutter::PurchasesFlutterPlugin::RegisterWithRegistrar(
+        flutter::PluginRegistrarManager::GetInstance()
+            ->GetRegistrar<flutter::PluginRegistrarWindows>(registrar));
 }

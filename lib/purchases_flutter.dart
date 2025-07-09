@@ -145,7 +145,8 @@ class Purchases {
   ) async {
     if (defaultTargetPlatform == TargetPlatform.windows) {
       debugPrint(
-          'purchases_flutter: Windows support is limited. Using simulated configuration.');
+        'purchases_flutter: Windows support is limited. Using simulated configuration.',
+      );
     }
 
     var purchasesCompletedByToUse = PurchasesAreCompletedByType.revenueCat;
@@ -599,7 +600,8 @@ class Purchases {
   static Future<LogInResult> logIn(String appUserID) async {
     if (defaultTargetPlatform == TargetPlatform.windows) {
       debugPrint(
-          'purchases_flutter: Windows support is limited. Using simulated response.');
+        'purchases_flutter: Windows support is limited. Using simulated response.',
+      );
     }
 
     final result =
@@ -827,7 +829,9 @@ class Purchases {
   /// Required for the RevenueCat Tenjin integration
   ///
   /// [tenjinAnalyticsInstallationID] Empty String or null will delete the subscriber attribute.
-  static Future<void> setTenjinAnalyticsInstallationID(String tenjinAnalyticsInstallationID) =>
+  static Future<void> setTenjinAnalyticsInstallationID(
+    String tenjinAnalyticsInstallationID,
+  ) =>
       _channel.invokeMethod(
         'setTenjinAnalyticsInstallationID',
         {'tenjinAnalyticsInstallationID': tenjinAnalyticsInstallationID},
@@ -1227,7 +1231,8 @@ class Purchases {
       );
 
   static Future<WebPurchaseRedemption?> parseAsWebPurchaseRedemption(
-      String urlString) async {
+    String urlString,
+  ) async {
     final bool result =
         await _channel.invokeMethod('isWebPurchaseRedemptionURL', {
       'urlString': urlString,
@@ -1240,12 +1245,14 @@ class Purchases {
   }
 
   static Future<WebPurchaseRedemptionResult> redeemWebPurchase(
-      WebPurchaseRedemption webPurchaseRedemption) async {
+    WebPurchaseRedemption webPurchaseRedemption,
+  ) async {
     final result = await _channel.invokeMethod('redeemWebPurchase', {
       'redemptionLink': webPurchaseRedemption.redemptionLink,
     });
     return WebPurchaseRedemptionResult.fromJson(
-        Map<String, dynamic>.from(result));
+      Map<String, dynamic>.from(result),
+    );
   }
 
   ///================================================================================
