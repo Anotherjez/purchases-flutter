@@ -54,9 +54,6 @@ class TestHomePageState extends State<TestHomePage> {
         return;
       }
 
-      print(
-          "🔧 Configurando RevenueCat con API key: ${paddleApiKey.substring(0, 8)}...");
-
       final configuration = PurchasesConfiguration(paddleApiKey);
       await Purchases.configure(configuration);
 
@@ -67,13 +64,10 @@ class TestHomePageState extends State<TestHomePage> {
         _status = '✅ RevenueCat configurado exitosamente';
         _isConfigured = true;
       });
-
-      print("✅ RevenueCat configurado. App User ID: $appUserID");
     } catch (e) {
       setState(() {
         _status = '❌ Error configurando RevenueCat: $e';
       });
-      print("❌ Error: $e");
     }
   }
 
@@ -86,8 +80,6 @@ class TestHomePageState extends State<TestHomePage> {
     try {
       // Genera un ID único para el test
       final testUserId = 'test_user_${DateTime.now().millisecondsSinceEpoch}';
-
-      print("🔑 Intentando login con usuario: $testUserId");
 
       setState(() {
         _status = '🔄 Haciendo login...';
@@ -104,18 +96,12 @@ class TestHomePageState extends State<TestHomePage> {
         _isLoggedIn = true;
       });
 
-      print("✅ Login exitoso:");
-      print("  - Usuario creado: ${result.created}");
-      print("  - App User ID: ${result.customerInfo.originalAppUserId}");
-      print("  - Primera vez visto: ${result.customerInfo.firstSeen}");
-
       _showMessage(
           '✅ Login exitoso! ${result.created ? 'Usuario creado' : 'Usuario existente'}');
     } catch (e) {
       setState(() {
         _status = '❌ Error en login: $e';
       });
-      print("❌ Error en login: $e");
       _showMessage('❌ Error en login: $e');
     }
   }
@@ -127,20 +113,10 @@ class TestHomePageState extends State<TestHomePage> {
     }
 
     try {
-      print("📊 Obteniendo información del cliente...");
-
-      final customerInfo = await Purchases.getCustomerInfo();
-
-      print("📊 Customer Info:");
-      print("  - Original App User ID: ${customerInfo.originalAppUserId}");
-      print("  - Primera vez visto: ${customerInfo.firstSeen}");
-      print("  - Última request: ${customerInfo.requestDate}");
-      print(
-          "  - Entitlements activos: ${customerInfo.entitlements.active.length}");
+      await Purchases.getCustomerInfo();
 
       _showMessage('📊 Customer Info obtenida exitosamente');
     } catch (e) {
-      print("❌ Error obteniendo customer info: $e");
       _showMessage('❌ Error obteniendo customer info: $e');
     }
   }
