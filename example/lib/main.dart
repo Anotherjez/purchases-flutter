@@ -6,6 +6,8 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -19,11 +21,13 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
+
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  MyHomePageState createState() => MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class MyHomePageState extends State<MyHomePage> {
   String _appUserID = '';
   String _status = 'Not configured';
   bool _isConfigured = false;
@@ -36,7 +40,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> _initializePurchases() async {
     try {
-      // Configure Purchases with your API key
       final configuration = PurchasesConfiguration("your_api_key_here");
       await Purchases.configure(configuration);
 
@@ -65,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     try {
       final result = await Purchases.logIn(
-          'test_user_' + DateTime.now().millisecondsSinceEpoch.toString());
+          'test_user_${DateTime.now().millisecondsSinceEpoch}');
 
       setState(() {
         _appUserID = result.customerInfo.originalAppUserId;
@@ -73,16 +76,19 @@ class _MyHomePageState extends State<MyHomePage> {
             'Logged in successfully. User ${result.created ? 'created' : 'exists'}.';
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text(
-                'Login successful! User ${result.created ? 'created' : 'exists'}')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text(
+                  'Login successful! User ${result.created ? 'created' : 'exists'}')),
+        );
+      }
     } catch (e) {
       setState(() {
         _status = 'Login failed: $e';
       });
 
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Login failed: $e')),
       );
@@ -173,11 +179,11 @@ class _MyHomePageState extends State<MyHomePage> {
             Center(
               child: ElevatedButton(
                 onPressed: _isConfigured ? _logIn : null,
-                child: Text('Test Login'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                   padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 ),
+                child: Text('Test Login'),
               ),
             ),
           ],

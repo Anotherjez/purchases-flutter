@@ -10,16 +10,23 @@
 #include <string>
 
 #if defined(__cplusplus)
-extern "C" {
+extern "C"
+{
 #endif
 
-// Function expected by Flutter plugin system
-void PurchasesFlutterPluginRegisterWithRegistrar(
-    FlutterDesktopPluginRegistrarRef registrar);
+    // Function expected by Flutter plugin system
+    void PurchasesFlutterPluginRegisterWithRegistrar(
+        FlutterDesktopPluginRegistrarRef registrar);
 
 #if defined(__cplusplus)
-}  // extern "C"
+} // extern "C"
 #endif
+
+// Forward declaration
+namespace purchases_flutter
+{
+    class RevenueCatApi;
+}
 
 namespace purchases_flutter
 {
@@ -64,6 +71,7 @@ namespace purchases_flutter
         bool configured_ = false;
         std::string api_key_;
         std::string app_user_id_;
+        std::unique_ptr<RevenueCatApi> revenuecat_api_;
     };
 
 } // namespace purchases_flutter

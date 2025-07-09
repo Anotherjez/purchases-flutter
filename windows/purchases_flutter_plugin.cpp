@@ -15,6 +15,9 @@
 #include <ctime>
 #include <iomanip>
 #include <cstdlib>
+#include <iostream>
+
+#include "revenuecat_api.h"
 
 namespace purchases_flutter
 {
@@ -123,9 +126,18 @@ namespace purchases_flutter
       }
     }
 
+    if (apiKey.empty())
+    {
+      result->Error("invalid_arguments", "API key is required");
+      return;
+    }
+
     // Store configuration
     configured_ = true;
     api_key_ = apiKey;
+
+    // Initialize RevenueCat API client
+    revenuecat_api_ = std::make_unique<RevenueCatApi>(apiKey);
 
     // Generate a random app user ID if not provided
     if (appUserId.empty())
@@ -136,6 +148,9 @@ namespace purchases_flutter
     {
       app_user_id_ = appUserId;
     }
+
+    std::cout << "RevenueCat configured with API key: " << apiKey.substr(0, 8) << "..." << std::endl;
+    std::cout << "App User ID: " << app_user_id_ << std::endl;
 
     // For now, return success - will implement actual HTTP call later
     result->Success();
@@ -177,19 +192,35 @@ namespace purchases_flutter
       return;
     }
 
-    // Store the new app user ID
-    bool created = (app_user_id_ != newAppUserId);
+    if (!revenuecat_api_)
+    {
+      result->Error("not_configured", "RevenueCat API not initialized");
+      return;
+    }
+
+    // Store the previous user ID to determine if this is a new user
     app_user_id_ = newAppUserId;
 
-    // Create a simulated CustomerInfo response
-    flutter::EncodableMap customerInfo = CreateEmptyCustomerInfo();
+    std::cout << "Logging in user: " << newAppUserId << std::endl;
 
-    // Create LogInResult
-    flutter::EncodableMap logInResult;
-    logInResult[flutter::EncodableValue("customerInfo")] = flutter::EncodableValue(customerInfo);
-    logInResult[flutter::EncodableValue("created")] = flutter::EncodableValue(created);
+    // Make actual API call to RevenueCat
+    auto loginResult = revenuecat_api_->LogIn(newAppUserId);
 
-    result->Success(flutter::EncodableValue(logInResult));
+    if (loginResult.success)
+    {
+      // Create LogInResult
+      flutter::EncodableMap logInResult;
+      logInResult[flutter::EncodableValue("customerInfo")] = flutter::EncodableValue(loginResult.customerInfo);
+      logInResult[flutter::EncodableValue("created")] = flutter::EncodableValue(loginResult.created);
+
+      std::cout << "Login successful. Created: " << (loginResult.created ? "true" : "false") << std::endl;
+      result->Success(flutter::EncodableValue(logInResult));
+    }
+    else
+    {
+      std::cout << "Login failed: " << loginResult.error << std::endl;
+      result->Error("login_failed", loginResult.error);
+    }
   }
 
   void PurchasesFlutterPlugin::HandleGetAppUserID(
@@ -225,7 +256,7 @@ namespace purchases_flutter
     // Set dates to current time
     std::time_t now = std::time(nullptr);
     std::ostringstream dateStream;
-    
+
     struct tm timeinfo;
     gmtime_s(&timeinfo, &now);
     dateStream << std::put_time(&timeinfo, "%Y-%m-%dT%H:%M:%SZ");
@@ -255,10 +286,11 @@ namespace purchases_flutter
 
   // Implementation of the function expected by Flutter plugin system
   void PurchasesFlutterPluginRegisterWithRegistrar(
-      FlutterDesktopPluginRegistrarRef registrar) {
+      FlutterDesktopPluginRegistrarRef registrar)
+  {
     PurchasesFlutterPlugin::RegisterWithRegistrar(
         flutter::PluginRegistrarManager::GetInstance()
             ->GetRegistrar<flutter::PluginRegistrarWindows>(registrar));
   }
 
-}  // namespace purchases_flutter
+} // namespace purchases_flutter
