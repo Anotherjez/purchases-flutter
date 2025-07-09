@@ -36,3 +36,6 @@ flutter:
         pluginClass: PurchasesFlutterPlugin
       macos:
         pluginClass: PurchasesFlutterPlugin
+      windows:
+        pluginClass: PurchasesFlutterPlugin
+        fileName: purchases_flutter_plugin_c_api.h

@@ -2,9 +2,9 @@
 
 #include <flutter/plugin_registrar_windows.h>
 
-#include "purchases_flutter_plugin.h"
+#include "include/purchases_flutter/purchases_flutter_plugin.h"
 
-void PurchasesFlutterPluginCApiRegisterWithRegistrar(
+void PurchasesFlutterPluginRegisterWithRegistrar(
     FlutterDesktopPluginRegistrarRef registrar) {
   purchases_flutter::PurchasesFlutterPlugin::RegisterWithRegistrar(
       flutter::PluginRegistrarManager::GetInstance()
