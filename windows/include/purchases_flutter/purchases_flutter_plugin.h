@@ -4,9 +4,22 @@
 #include <flutter/method_channel.h>
 #include <flutter/plugin_registrar_windows.h>
 #include <flutter/standard_method_codec.h>
+#include <flutter_plugin_registrar.h>
 
 #include <memory>
 #include <string>
+
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
+// Function expected by Flutter plugin system
+void PurchasesFlutterPluginRegisterWithRegistrar(
+    FlutterDesktopPluginRegistrarRef registrar);
+
+#if defined(__cplusplus)
+}  // extern "C"
+#endif
 
 namespace purchases_flutter
 {

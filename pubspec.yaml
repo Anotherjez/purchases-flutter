@@ -38,3 +38,6 @@ flutter:
       web:
         pluginClass: PurchasesFlutterPlugin
         fileName: web/purchases_flutter_web.dart
+      windows:
+        pluginClass: PurchasesFlutterPlugin
+        fileName: purchases_flutter_plugin_c_api.h

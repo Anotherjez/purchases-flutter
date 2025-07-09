@@ -1,4 +1,4 @@
-#include "purchases_flutter_plugin.h"
+#include "include/purchases_flutter/purchases_flutter_plugin.h"
 
 // This must be included before many other Windows headers.
 #include <windows.h>
@@ -229,7 +229,10 @@ namespace purchases_flutter
     // Set dates to current time
     std::time_t now = std::time(nullptr);
     std::ostringstream dateStream;
-    dateStream << std::put_time(std::gmtime(&now), "%Y-%m-%dT%H:%M:%SZ");
+    
+    struct tm timeinfo;
+    gmtime_s(&timeinfo, &now);
+    dateStream << std::put_time(&timeinfo, "%Y-%m-%dT%H:%M:%SZ");
     std::string currentDate = dateStream.str();
 
     customerInfo[flutter::EncodableValue("firstSeen")] = flutter::EncodableValue(currentDate);
@@ -254,4 +257,12 @@ namespace purchases_flutter
     return "$RCAnonymousID:" + result;
   }
 
-} // namespace purchases_flutter
+// Implementation of the function expected by Flutter plugin system
+void PurchasesFlutterPluginRegisterWithRegistrar(
+    FlutterDesktopPluginRegistrarRef registrar) {
+  purchases_flutter::PurchasesFlutterPlugin::RegisterWithRegistrar(
+      flutter::PluginRegistrarManager::GetInstance()
+          ->GetRegistrar<flutter::PluginRegistrarWindows>(registrar));
+}
+
+}  // namespace purchases_flutter
