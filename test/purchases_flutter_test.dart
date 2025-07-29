@@ -62,7 +62,7 @@ void main() {
         'code': 'GEM',
         'serverDescription': null,
       },
-    }
+    },
   };
 
   setUp(() {
