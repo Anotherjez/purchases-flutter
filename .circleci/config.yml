@@ -36,10 +36,21 @@ aliases:
 orbs:
   android: circleci/android@2.5.0
   swissknife: roopakv/swissknife@0.65.0
-  revenuecat: revenuecat/sdks-common-config@2.1.0
+  revenuecat: revenuecat/sdks-common-config@3.20.0
   macos: circleci/macos@2.3.2
   flutter: circleci/flutter@2.1.0
   ruby: circleci/ruby@2.5.3
+
+executors:
+  macos-executor:
+    parameters:
+      xcode_version:
+        type: string
+        default: "15.4"
+    macos:
+      xcode: << parameters.xcode_version >>
+    resource_class: m4pro.medium
+    shell: /bin/bash --login -o pipefail
 
 parameters:
   action:
@@ -72,15 +83,6 @@ commands:
           command: |
             cd <<parameters.project>>
             flutter pub get
-  build-flutter-project:
-    description: "Install dependencies and build"
-    parameters:
-      project:
-        default: .
-        type: string
-    steps:
-      - flutter-get-dependencies:
-          project: <<parameters.project>>
 
   gradle-dependencies:
     description: "Get Gradle dependencies"
@@ -143,21 +145,9 @@ commands:
           command: xcrun simctl create '<< parameters.sim-name >>' com.apple.CoreSimulator.SimDeviceType.<< parameters.sim-device-type >> com.apple.CoreSimulator.SimRuntime.<< parameters.sim-device-runtime >>
 
   install-sdkman:
-    description: Install SDKMAN
-    parameters:
-      root:
-        type: string
-        default: /root
+    description: Install SDKMAN and set up Java environment
     steps:
-      - run:
-          name: Installing SDKMAN
-          command: |
-            if curl -s "https://get.sdkman.io?rcupdate=false" | bash; then
-              echo -e '\nsource "<< parameters.root >>/.sdkman/bin/sdkman-init.sh"' >> $BASH_ENV
-              source $BASH_ENV
-            else
-              echo "Error installing SDKMAN, continuing with default Java" >&2
-            fi
+      - revenuecat/install-sdkman
       - run:
           name: Setup Java environment
           command: |
@@ -179,60 +169,127 @@ commands:
             # Need >= 1.14.0 to prevent ActiveSupport crash
             gem install cocoapods -v '>= 1.14.0'
 
+  prepare-for-spm-integration-test:
+    description: Enable Swift Package Manager support in Flutter + remove local .podspec files
+    steps:
+      - run:
+          name: Enable SPM feature
+          command: flutter config --enable-swift-package-manager
+      - run:
+          name: Remove all local .podspec files recursively
+          command: find . -name "*.podspec" -type f -delete
+
+  prepare-for-cocoapods-integration-test:
+    description: Disable Swift Package Manager support in Flutter (to use Cocoapods) + remove local Swift.package files
+    steps:
+      - run:
+          name: Disable SPM feature
+          command: flutter config --no-enable-swift-package-manager
+      - run:
+          name: Remove all local Package.swift files
+          command: find . -name "Package.swift" -type f -delete
+
+  pod-update-with-retry:
+    description: Run pod update with retry for CocoaPods propagation issues
+    parameters:
+      working_directory:
+        type: string
+      platform:
+        type: enum
+        enum: [ios, macos]
+      max_retries:
+        type: integer
+        default: 5
+      retry_wait_seconds:
+        type: integer
+        default: 300
+    steps:
+      - run:
+          name: Flutter precache << parameters.platform >>
+          command: flutter precache --<< parameters.platform >>
+      - run:
+          name: Pod update
+          working_directory: << parameters.working_directory >>
+          command: |
+            enable_retry=false
+            if [[ "$CIRCLE_BRANCH" == bump-phc/* ]]; then
+              enable_retry=true
+            fi
+
+            max_retries=<< parameters.max_retries >>
+            retry_wait=<< parameters.retry_wait_seconds >>
+            retry_count=0
+
+            if [ "$enable_retry" = "false" ]; then
+              pod update --repo-update
+              exit $?
+            fi
+
+            until pod update --repo-update; do
+              retry_count=$((retry_count + 1))
+              if [ "$retry_count" -ge "$max_retries" ]; then
+                echo "Pod update failed after $max_retries attempts"
+                exit 1
+              fi
+              echo "Pod update failed (attempt $retry_count/$max_retries)"
+              echo "Waiting $retry_wait seconds before retrying (CocoaPods may not have propagated yet)..."
+              sleep "$retry_wait"
+              echo "Retrying pod update..."
+            done
+            echo "Pod update succeeded"
+
 jobs:
-  lint:
-    description: "Run static analysis for Flutter"
+  lint-test:
+    description: "Run static analysis and tests for purchases_flutter"
+    parameters:
+      flutter-version:
+        type: string
+        default: "stable"
+    docker:
+      - image: ghcr.io/cirruslabs/flutter:<< parameters.flutter-version >>
+    steps:
+      - checkout
+      - flutter-get-dependencies
+      - run:
+          name: Analyze code
+          command: flutter analyze lib
+      - run:
+          name: Run tests
+          command: flutter test
+
+  lint-test-ui:
+    description: "Run static analysis and tests for purchases_ui_flutter"
+    parameters:
+      flutter-version:
+        type: string
+        default: "stable"
+    docker:
+      - image: ghcr.io/cirruslabs/flutter:<< parameters.flutter-version >>
+    steps:
+      - checkout
+      - flutter-get-dependencies
+      - flutter-get-dependencies:
+          project: purchases_ui_flutter
+      - run:
+          name: Analyze code for purchases_ui_flutter
+          command: cd purchases_ui_flutter && flutter analyze lib
+      - run:
+          name: Run tests for purchases_ui_flutter
+          command: cd purchases_ui_flutter && flutter test
+
+  lint-sample-apps:
+    description: "Resolve dependencies for sample apps and api_tester"
     docker:
       - image: ghcr.io/cirruslabs/flutter:stable
     steps:
       - checkout
-      - build-flutter-project
+      - flutter-get-dependencies
       - flutter-get-dependencies:
           project: revenuecat_examples/MagicWeather
       - flutter-get-dependencies:
           project: revenuecat_examples/purchase_tester
       - flutter-get-dependencies:
           project: api_tester
-      - flutter-get-dependencies:
-          project: purchases_ui_flutter
-      - run:
-          name: Analyze code
-          command: flutter analyze lib
-      - run:
-          name: Analyze code for purchases_ui_flutter
-          command: cd purchases_ui_flutter && flutter analyze lib
-
-  test:
-    description: "Run tests for Flutter"
-    docker:
-      - image: ghcr.io/cirruslabs/flutter:stable
-    steps:
-      - checkout
-      - build-flutter-project
-      - run:
-          name: Run tests
-          command: flutter test
-      - run:
-          name: Run tests for purchases_ui_flutter
-          command: cd purchases_ui_flutter && flutter test
-
-  test_main_sdk_min_version_compatibility:
-    description: "Test min version compatibility for purchases_flutter SDK"
-    <<: *android-executor
-    steps:
-      - checkout
-      - flutter/install_sdk_and_pub:
-          version: 3.27.0
-
-  test_ui_sdk_min_version_compatibility:
-    description: "Test UI min version compatibility for purchases_ui_flutter SDK"
-    <<: *android-executor
-    steps:
-        - checkout
-        - flutter/install_sdk_and_pub:
-            version: 3.27.0
-        - flutter-get-dependencies:
-            project: purchases_ui_flutter
 
   api_test:
     description: "Run API tests for Flutter"
@@ -274,8 +331,7 @@ jobs:
     steps:
       - checkout
       - replace-api-key
-      - install-sdkman:
-          root: /home/circleci
+      - install-sdkman
       - android/create-avd:
           avd-name: integration-tests
           system-image: system-images;android-33;google_apis;x86_64
@@ -284,19 +340,17 @@ jobs:
           avd-name: integration-tests
           post-emulator-launch-assemble-command: ''
       - setup-flutter
-      - build-flutter-project:
+      - flutter-get-dependencies:
           project: revenuecat_examples/purchase_tester
       - run:
           command: |
             cd revenuecat_examples/purchase_tester
             flutter test integration_test/app_test.dart
 
-  ios-integration-test:
+  ios-integration-test-cocoapods:
     description: "Run integration tests for Flutter"
-    resource_class: macos.m1.medium.gen1
-    macos:
-      xcode: 15.2
-    shell: /bin/bash --login -o pipefail
+    executor:
+      name: macos-executor
     steps:
       - checkout
       - install-correct-cocoapods
@@ -304,8 +358,56 @@ jobs:
           device: iPhone 14
           version: '16.4'
       - setup-flutter
+      - prepare-for-cocoapods-integration-test
       - replace-api-key
-      - build-flutter-project:
+      - flutter-get-dependencies:
+          project: revenuecat_examples/purchase_tester
+      - pod-update-with-retry:
+          working_directory: revenuecat_examples/purchase_tester/ios
+          platform: ios
+      - run:
+          name: Run Flutter integration tests
+          command: |
+            cd revenuecat_examples/purchase_tester
+            flutter drive --target=integration_test/app_test.dart \
+            --driver=test_driver/integration_test.dart
+
+  macos-integration-test-cocoapods:
+    description: "Run integration tests for Flutter"
+    executor:
+      name: macos-executor
+    steps:
+      - checkout
+      - install-correct-cocoapods
+      - setup-flutter
+      - prepare-for-cocoapods-integration-test
+      - replace-api-key
+      - flutter-get-dependencies:
+          project: revenuecat_examples/purchase_tester
+      - pod-update-with-retry:
+          working_directory: revenuecat_examples/purchase_tester/macos
+          platform: macos
+      - run:
+          name: Run Flutter integration tests
+          command: |
+            cd revenuecat_examples/purchase_tester
+            DEVICE_ID=$(flutter devices | awk -F '•' 'NR==2 {gsub(/^[ \t]+|[ \t]+$/, "", $1); print $2}')
+            flutter drive -d $DEVICE_ID --target=integration_test/app_test.dart \
+            --driver=test_driver/integration_test.dart
+
+  ios-integration-test-spm:
+    description: "Run integration tests for Flutter"
+    executor:
+      name: macos-executor
+    steps:
+      - checkout
+      - macos/preboot-simulator:
+          device: iPhone 14
+          version: '16.4'
+      - setup-flutter
+      - prepare-for-spm-integration-test
+      - replace-api-key
+      - flutter-get-dependencies:
           project: revenuecat_examples/purchase_tester
       - run:
           name: Run Flutter integration tests
@@ -314,18 +416,16 @@ jobs:
             flutter drive --target=integration_test/app_test.dart \
             --driver=test_driver/integration_test.dart
 
-  macos-integration-test:
+  macos-integration-test-spm:
     description: "Run integration tests for Flutter"
-    resource_class: macos.m1.medium.gen1
-    macos:
-      xcode: 15.2
-    shell: /bin/bash --login -o pipefail
+    executor:
+      name: macos-executor
     steps:
       - checkout
-      - install-correct-cocoapods
       - setup-flutter
+      - prepare-for-spm-integration-test
       - replace-api-key
-      - build-flutter-project:
+      - flutter-get-dependencies:
           project: revenuecat_examples/purchase_tester
       - run:
           name: Run Flutter integration tests
@@ -333,7 +433,7 @@ jobs:
             cd revenuecat_examples/purchase_tester
             DEVICE_ID=$(flutter devices | awk -F '•' 'NR==2 {gsub(/^[ \t]+|[ \t]+$/, "", $1); print $2}')
             flutter drive -d $DEVICE_ID --target=integration_test/app_test.dart \
-            --driver=test_driver/integration_test.dart
+            --driver=test_driver/integration_test.dart        
 
   dry-run-release:
     description: "Attempts to do a dry-run release of purchases-flutter and purchases_ui_flutter"
@@ -347,6 +447,61 @@ jobs:
       - run:
           name: Dry Run Release for purchases_ui_flutter
           command: cd purchases_ui_flutter && flutter pub publish --dry-run
+
+  run-maestro-e2e-tests-ios:
+    executor:
+      name: macos-executor
+      xcode_version: "26.3"
+    steps:
+      - checkout
+      - revenuecat/install-gem-mac-dependencies:
+          cache-version: v1
+      - setup-flutter
+      - revenuecat/install-maestro
+      - run:
+          name: Boot iOS Simulator
+          command: |
+            xcrun simctl boot "iPhone 17" || true
+            xcrun simctl bootstatus "iPhone 17" -b
+      - run:
+          name: Run Maestro E2E Tests (iOS)
+          command: bundle exec fastlane run_maestro_e2e_tests_ios
+          no_output_timeout: 15m
+      - store_test_results:
+          path: fastlane/test_output
+      - store_artifacts:
+          path: fastlane/test_output
+
+  run-maestro-e2e-tests-android:
+    <<: *android-machine-emulator
+    steps:
+      - checkout
+      - run:
+          name: Install Ruby and Bundler
+          command: |
+            gem install bundler
+            bundle install
+      - setup-flutter
+      - run:
+          name: Build Maestro app (Android)
+          command: bundle exec fastlane build_maestro_app_android
+          no_output_timeout: 15m
+      - android/create-avd:
+          avd-name: test-e2e
+          system-image: system-images;android-34;google_apis;x86_64
+          install: true
+      - android/start-emulator:
+          avd-name: test-e2e
+          post-emulator-launch-assemble-command: ""
+      - revenuecat/install-maestro
+      - run:
+          name: Run Maestro E2E Tests (Android)
+          command: bundle exec fastlane run_maestro_e2e_tests_android
+          no_output_timeout: 15m
+      - store_test_results:
+          path: fastlane/test_output
+      - store_artifacts:
+          path: fastlane/test_output
 
   update-hybrid-common-versions:
     description: "Creates a PR updating purchases-hybrid-common to latest release"
@@ -409,35 +564,59 @@ jobs:
 workflows:
   danger:
     jobs:
-      - revenuecat/danger
+      - revenuecat/danger:
+          ruby_version: "3.2.0"
   test:
     when:
       not:
         equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
     jobs:
-      - lint
-      - test
+      - lint-test:
+          name: lint-test
+      - lint-test:
+          name: lint-test-min-version
+          flutter-version: "3.22.0"
+      - lint-test-ui:
+          name: lint-test-ui
+      - lint-test-ui:
+          name: lint-test-ui-min-version
+          flutter-version: "3.22.0"
+      - lint-sample-apps
       - api_test
       - dry-run-release: *release-branches
-      - ios-integration-test
-      - macos-integration-test
+      - ios-integration-test-cocoapods
+      - macos-integration-test-cocoapods
+      - ios-integration-test-spm
+      - macos-integration-test-spm
       - android-integration-test-build
-      - test_main_sdk_min_version_compatibility
-      - test_ui_sdk_min_version_compatibility
+      - run-maestro-e2e-tests-ios:
+          context:
+            - e2e-tests
+      - run-maestro-e2e-tests-android:
+          context:
+            - e2e-tests
 
   deploy:
     when:
       not:
         equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
     jobs:
-      - ios-integration-test: *release-branches
-      - macos-integration-test: *release-branches
+      - ios-integration-test-cocoapods:
+          name: ios-integration-test-cocoapods-release
+          <<: *release-branches
+      - macos-integration-test-cocoapods:
+          name: macos-integration-test-cocoapods-release
+          <<: *release-branches
+      - ios-integration-test-spm: *release-branches
+      - macos-integration-test-spm: *release-branches
       - android-integration-test: *release-branches
       - hold:
           type: approval
           requires:
-            - ios-integration-test
-            - macos-integration-test
+            - ios-integration-test-cocoapods-release
+            - macos-integration-test-cocoapods-release
+            - ios-integration-test-spm
+            - macos-integration-test-spm
             - android-integration-test
           <<: *release-branches
       - revenuecat/tag-current-branch:
@@ -454,6 +633,11 @@ workflows:
             - make-release
             - make-release-purchases-flutter-ui
           <<: *release-tags
+      - revenuecat/merge-release-pr:
+          repo_name: purchases-flutter
+          requires:
+            - github_release
+          <<: *release-tags
   weekly-run-workflow:
     when:
       and:
@@ -466,6 +650,24 @@ workflows:
       equal: [ bump, << pipeline.parameters.action >> ]
     jobs:
       - revenuecat/automatic-bump
+  maestro-e2e-tests-ios:
+    when:
+      or:
+        - equal: ["maestro_e2e_tests", << pipeline.schedule.name >>]
+    jobs:
+      - run-maestro-e2e-tests-ios:
+          context:
+            - e2e-tests
+
+  maestro-e2e-tests-android:
+    when:
+      or:
+        - equal: ["maestro_e2e_tests", << pipeline.schedule.name >>]
+    jobs:
+      - run-maestro-e2e-tests-android:
+          context:
+            - e2e-tests
+
   update-hybrid-common-versions:
     when:
       equal: [ upgrade-hybrid-common, << pipeline.parameters.action >> ]

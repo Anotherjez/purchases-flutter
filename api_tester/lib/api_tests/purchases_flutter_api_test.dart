@@ -36,6 +36,7 @@ class _PurchasesFlutterApiTest {
     configuration.store = Store.amazon;
     configuration.userDefaultsSuiteName = "fakeSuiteName";
     configuration.storeKitVersion = StoreKitVersion.defaultVersion;
+    configuration.preferredUILocaleOverride = "es-ES";
     Future<void> callback = Purchases.configure(configuration);
   }
 
@@ -78,6 +79,11 @@ class _PurchasesFlutterApiTest {
     Offerings offerings = await Purchases.syncAttributesAndOfferingsIfNeeded();
   }
 
+  void _checkSetAppstackAttributionParams() async {
+    Map<String, dynamic> data = {'appstack_id': 'test_id'};
+    Offerings offerings = await Purchases.setAppstackAttributionParams(data);
+  }
+
   void _checkGetProducts() async {
     List<String> productIdentifiers = List.empty();
     PurchaseType purchaseType = PurchaseType.subs;
@@ -85,6 +91,10 @@ class _PurchasesFlutterApiTest {
         await Purchases.getProducts(productIdentifiers);
     products =
         await Purchases.getProducts(productIdentifiers, type: purchaseType);
+  }
+
+  void _checkPurchase(PurchaseParams params) async {
+    PurchaseResult purchaseResult = await Purchases.purchase(params);
   }
 
   void _checkPurchaseProduct() async {
@@ -167,6 +177,11 @@ class _PurchasesFlutterApiTest {
 
   void _checkStorefront() async {
     Storefront? storefront = await Purchases.storefront;
+  }
+
+  void _checkOverridePreferredUILocale() async {
+    String locale = "en-US";
+    Future<void> future = Purchases.overridePreferredUILocale(locale);
   }
 
   void _checkLogIn() async {
@@ -332,6 +347,11 @@ class _PurchasesFlutterApiTest {
     await Purchases.setAirshipChannelID(id);
   }
 
+  void _checkSetPostHogUserID() {
+    String id = "fake_posthog_user_id";
+    Future<void> future = Purchases.setPostHogUserID(id);
+  }
+
   void _checkSetMediaSource() {
     String mediaSource = "fakeMediaSource";
     Future<void> future = Purchases.setMediaSource(mediaSource);
@@ -404,6 +424,18 @@ class _PurchasesFlutterApiTest {
     GoogleProrationMode? storedProrationMode = purchaseInfo.prorationMode;
   }
 
+  void _checkStoreProductChangeInfo() {
+    String oldProductIdentifier = "fakeOldProductIdentifier";
+    StoreReplacementMode? replacementMode;
+
+    StoreProductChangeInfo purchaseInfo =
+        StoreProductChangeInfo(oldProductIdentifier);
+    purchaseInfo = StoreProductChangeInfo(oldProductIdentifier,
+        replacementMode: replacementMode);
+    String storedOldProductIdentifier = purchaseInfo.oldProductIdentifier;
+    StoreReplacementMode? storedReplacementMode = purchaseInfo.replacementMode;
+  }
+
   void _checkProrationMode(ProrationMode prorationMode) {
     switch (prorationMode) {
       case ProrationMode.unknownSubscriptionUpgradeDowngradePolicy:
@@ -422,6 +454,17 @@ class _PurchasesFlutterApiTest {
       case GoogleProrationMode.immediateAndChargeFullPrice:
       case GoogleProrationMode.immediateAndChargeProratedPrice:
       case GoogleProrationMode.deferred:
+        break;
+    }
+  }
+
+  void _checkStoreReplacementMode(StoreReplacementMode replacementMode) {
+    switch (replacementMode) {
+      case StoreReplacementMode.withTimeProration:
+      case StoreReplacementMode.chargeProratedPrice:
+      case StoreReplacementMode.withoutProration:
+      case StoreReplacementMode.chargeFullPrice:
+      case StoreReplacementMode.deferred:
         break;
     }
   }
@@ -530,10 +573,18 @@ class _PurchasesFlutterApiTest {
         productID, receiptID, amazonUserID, isoCurrencyCode, price);
   }
 
-  void _checkSyncAmazonPurchase(String productID, String receiptID,
-      String amazonUserID, String? isoCurrencyCode, double? price) async {
+  void _checkSyncAmazonPurchase(
+      String productID,
+      String receiptID,
+      String amazonUserID,
+      String? isoCurrencyCode,
+      double? price,
+      int? purchaseTime) async {
     Future<void> future = Purchases.syncAmazonPurchase(
         productID, receiptID, amazonUserID, isoCurrencyCode, price);
+    Future<void> future2 = Purchases.syncAmazonPurchase(
+        productID, receiptID, amazonUserID, isoCurrencyCode, price,
+        purchaseTime: purchaseTime);
   }
 
   void _showInAppMessages() async {
@@ -563,12 +614,15 @@ class _PurchasesFlutterApiTest {
   }
 
   void _checkWebPurchaseRedemption(String urlString) async {
-    WebPurchaseRedemption? webPurchaseRedemption = await Purchases.parseAsWebPurchaseRedemption(urlString);
-    WebPurchaseRedemptionResult? result = await Purchases.redeemWebPurchase(webPurchaseRedemption!);
+    WebPurchaseRedemption? webPurchaseRedemption =
+        await Purchases.parseAsWebPurchaseRedemption(urlString);
+    WebPurchaseRedemptionResult? result =
+        await Purchases.redeemWebPurchase(webPurchaseRedemption!);
   }
 
   void _checkGetVirtualCurrencies() async {
-    VirtualCurrencies virtualCurrencies = await Purchases.getVirtualCurrencies();
+    VirtualCurrencies virtualCurrencies =
+        await Purchases.getVirtualCurrencies();
   }
 
   void _checkInvalidateVirtualCurrenciesCache() {
@@ -576,7 +630,156 @@ class _PurchasesFlutterApiTest {
   }
 
   void _checkGetCachedVirtualCurrencies() async {
-    VirtualCurrencies? virtualCurrencies = await Purchases.getCachedVirtualCurrencies();
+    VirtualCurrencies? virtualCurrencies =
+        await Purchases.getCachedVirtualCurrencies();
+  }
+
+  void _checkTrackAdDisplayed() {
+    Future<void> future = Purchases.adTracker.trackAdDisplayed(const AdDisplayedData(
+      mediatorName: AdMediatorName.adMob,
+      adFormat: AdFormat.banner,
+      adUnitId: 'unit-1',
+      impressionId: 'imp-1',
+    ));
+  }
+
+  void _checkTrackAdDisplayedWithOptionals() {
+    Future<void> future = Purchases.adTracker.trackAdDisplayed(const AdDisplayedData(
+      mediatorName: AdMediatorName.adMob,
+      adFormat: AdFormat.banner,
+      adUnitId: 'unit-1',
+      impressionId: 'imp-1',
+      networkName: 'network-1',
+      placement: 'placement-1',
+    ));
+  }
+
+  void _checkTrackAdOpened() {
+    Future<void> future = Purchases.adTracker.trackAdOpened(const AdOpenedData(
+      mediatorName: AdMediatorName.adMob,
+      adFormat: AdFormat.interstitial,
+      adUnitId: 'unit-1',
+      impressionId: 'imp-1',
+    ));
+  }
+
+  void _checkTrackAdOpenedWithOptionals() {
+    Future<void> future = Purchases.adTracker.trackAdOpened(const AdOpenedData(
+      mediatorName: AdMediatorName.adMob,
+      adFormat: AdFormat.interstitial,
+      adUnitId: 'unit-1',
+      impressionId: 'imp-1',
+      networkName: 'network-1',
+      placement: 'placement-1',
+    ));
+  }
+
+  void _checkTrackAdLoaded() {
+    Future<void> future = Purchases.adTracker.trackAdLoaded(const AdLoadedData(
+      mediatorName: AdMediatorName.adMob,
+      adFormat: AdFormat.rewarded,
+      adUnitId: 'unit-1',
+      impressionId: 'imp-1',
+    ));
+  }
+
+  void _checkTrackAdLoadedWithOptionals() {
+    Future<void> future = Purchases.adTracker.trackAdLoaded(const AdLoadedData(
+      mediatorName: AdMediatorName.adMob,
+      adFormat: AdFormat.rewarded,
+      adUnitId: 'unit-1',
+      impressionId: 'imp-1',
+      networkName: 'network-1',
+      placement: 'placement-1',
+    ));
+  }
+
+  void _checkTrackAdRevenue() {
+    Future<void> future = Purchases.adTracker.trackAdRevenue(const AdRevenueData(
+      mediatorName: AdMediatorName.adMob,
+      adFormat: AdFormat.banner,
+      adUnitId: 'unit-1',
+      impressionId: 'imp-1',
+      revenueMicros: 1000000,
+      currency: 'USD',
+      precision: AdRevenuePrecision.exact,
+    ));
+  }
+
+  void _checkTrackAdRevenueWithOptionals() {
+    Future<void> future = Purchases.adTracker.trackAdRevenue(const AdRevenueData(
+      mediatorName: AdMediatorName.adMob,
+      adFormat: AdFormat.banner,
+      adUnitId: 'unit-1',
+      impressionId: 'imp-1',
+      revenueMicros: 1000000,
+      currency: 'USD',
+      precision: AdRevenuePrecision.exact,
+      networkName: 'network-1',
+      placement: 'placement-1',
+    ));
+  }
+
+  void _checkTrackAdFailedToLoad() {
+    Future<void> future = Purchases.adTracker.trackAdFailedToLoad(const AdFailedToLoadData(
+      mediatorName: AdMediatorName.adMob,
+      adFormat: AdFormat.banner,
+      adUnitId: 'unit-1',
+    ));
+  }
+
+  void _checkTrackAdFailedToLoadWithOptionals() {
+    Future<void> future = Purchases.adTracker.trackAdFailedToLoad(const AdFailedToLoadData(
+      mediatorName: AdMediatorName.adMob,
+      adFormat: AdFormat.banner,
+      adUnitId: 'unit-1',
+      placement: 'placement-1',
+      mediatorErrorCode: 42,
+    ));
+  }
+
+  void _checkTrackCustomPaywallImpression() {
+    Future<void> future = Purchases.trackCustomPaywallImpression();
+  }
+
+  void _checkTrackCustomPaywallImpressionWithParams() {
+    Future<void> future = Purchases.trackCustomPaywallImpression(
+      params: const CustomPaywallImpressionParams(paywallId: 'my-paywall'),
+    );
+  }
+
+  void _checkTrackCustomPaywallImpressionWithOfferingId() {
+    Future<void> future = Purchases.trackCustomPaywallImpression(
+      params: const CustomPaywallImpressionParams(offeringId: 'my-offering'),
+    );
+  }
+
+  void _checkTrackCustomPaywallImpressionWithBothParams() {
+    Future<void> future = Purchases.trackCustomPaywallImpression(
+      params: const CustomPaywallImpressionParams(
+        paywallId: 'my-paywall',
+        offeringId: 'my-offering',
+      ),
+    );
+  }
+
+  void _checkCustomPaywallImpressionParams() {
+    CustomPaywallImpressionParams params =
+        const CustomPaywallImpressionParams();
+    String? paywallId = params.paywallId;
+    String? offeringId = params.offeringId;
+
+    CustomPaywallImpressionParams paramsWithId =
+        const CustomPaywallImpressionParams(paywallId: 'test');
+
+    CustomPaywallImpressionParams paramsWithOffering =
+        const CustomPaywallImpressionParams(offeringId: 'offering');
+
+    CustomPaywallImpressionParams paramsWithBoth =
+        const CustomPaywallImpressionParams(
+      paywallId: 'test',
+      offeringId: 'offering',
+    );
   }
 }
 

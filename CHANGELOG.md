@@ -1,5 +1,970 @@
+## 10.2.3
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 18.14.1 (#1777) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 10.9.0](https://github.com/RevenueCat/purchases-android/releases/tag/10.9.0)
+  * [iOS 5.78.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.78.0)
+  * [iOS 5.77.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.77.0)
+  * [Web 1.42.3](https://github.com/RevenueCat/purchases-js/releases/tag/1.42.3)
+  * [Web 1.42.2](https://github.com/RevenueCat/purchases-js/releases/tag/1.42.2)
+  * [Web 1.42.1](https://github.com/RevenueCat/purchases-js/releases/tag/1.42.1)
+
+### 🔄 Other Changes
+* Bump fastlane from 2.236.0 to 2.236.1 (#1779) via dependabot[bot] (@dependabot[bot])
+* Bump fastlane from 2.235.0 to 2.236.0 (#1775) via dependabot[bot] (@dependabot[bot])
+
+## 10.2.2
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 18.10.0 (#1771) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 10.8.0](https://github.com/RevenueCat/purchases-android/releases/tag/10.8.0)
+  * [iOS 5.76.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.76.0)
+  * [Web 1.42.0](https://github.com/RevenueCat/purchases-js/releases/tag/1.42.0)
+
+## 10.2.1
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 18.9.1 (#1764) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 10.7.0](https://github.com/RevenueCat/purchases-android/releases/tag/10.7.0)
+  * [iOS 5.75.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.75.0)
+  * [Web 1.41.2](https://github.com/RevenueCat/purchases-js/releases/tag/1.41.2)
+
+### 🔄 Other Changes
+* Bump fastlane-plugin-revenuecat_internal from `af7bb5c` to `ce6a7ef` (#1767) via dependabot[bot] (@dependabot[bot])
+
+## 10.2.0
+## RevenueCat SDK
+### ✨ New Features
+* feat: ad tracking API (#1750) via Peter Porfy (@peterporfy)
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 18.8.0 (#1760) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 10.6.1](https://github.com/RevenueCat/purchases-android/releases/tag/10.6.1)
+  * [iOS 5.74.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.74.0)
+  * [iOS 5.73.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.73.1)
+  * [Web 1.41.1](https://github.com/RevenueCat/purchases-js/releases/tag/1.41.1)
+  * [Web 1.41.0](https://github.com/RevenueCat/purchases-js/releases/tag/1.41.0)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 18.7.1 (#1758) via RevenueCat Git Bot (@RCGitBot)
+
+### 🔄 Other Changes
+* Bump fastlane from 2.234.0 to 2.235.0 (#1761) via dependabot[bot] (@dependabot[bot])
+
+## 10.1.1
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 18.7.0 (#1755) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 10.6.0](https://github.com/RevenueCat/purchases-android/releases/tag/10.6.0)
+  * [iOS 5.73.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.73.0)
+  * [Web 1.40.0](https://github.com/RevenueCat/purchases-js/releases/tag/1.40.0)
+  * [Web 1.39.1](https://github.com/RevenueCat/purchases-js/releases/tag/1.39.1)
+
+### 🔄 Other Changes
+* Remove update_fastlane from before_all (#1753) via Antonio Pallares (@ajpallares)
+
+## 10.1.0
+## RevenueCat SDK
+### ✨ New Features
+* Unified StoreReplacementMode API (#1746) via Will Taylor (@fire-at-will)
+### 📦 Dependency Updates
+* [RENOVATE] Update dependency gradle to v8.14.5 (#1749) via RevenueCat Git Bot (@RCGitBot)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 18.6.0 (#1748) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 10.5.0](https://github.com/RevenueCat/purchases-android/releases/tag/10.5.0)
+  * [Android 10.4.0](https://github.com/RevenueCat/purchases-android/releases/tag/10.4.0)
+  * [iOS 5.72.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.72.0)
+  * [iOS 5.71.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.71.0)
+  * [Web 1.39.0](https://github.com/RevenueCat/purchases-js/releases/tag/1.39.0)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 18.5.0 (#1747) via RevenueCat Git Bot (@RCGitBot)
+
+### 🔄 Other Changes
+* Bump fastlane from 2.233.1 to 2.234.0 (#1751) via dependabot[bot] (@dependabot[bot])
+
+## 10.0.2
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 18.4.0 (#1744) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 10.3.1](https://github.com/RevenueCat/purchases-android/releases/tag/10.3.1)
+  * [Android 10.3.0](https://github.com/RevenueCat/purchases-android/releases/tag/10.3.0)
+  * [Android 10.2.1](https://github.com/RevenueCat/purchases-android/releases/tag/10.2.1)
+  * [iOS 5.70.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.70.0)
+  * [iOS 5.69.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.69.0)
+  * [Web 1.38.0](https://github.com/RevenueCat/purchases-js/releases/tag/1.38.0)
+  * [Web 1.37.0](https://github.com/RevenueCat/purchases-js/releases/tag/1.37.0)
+  * [Web 1.36.0](https://github.com/RevenueCat/purchases-js/releases/tag/1.36.0)
+  * [Web 1.35.1](https://github.com/RevenueCat/purchases-js/releases/tag/1.35.1)
+  * [Web 1.35.0](https://github.com/RevenueCat/purchases-js/releases/tag/1.35.0)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 18.3.0 (#1741) via RevenueCat Git Bot (@RCGitBot)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 18.2.0 (#1739) via RevenueCat Git Bot (@RCGitBot)
+
+### 🔄 Other Changes
+* Bump fastlane-plugin-revenuecat_internal from `21e02ec` to `af7bb5c` (#1743) via dependabot[bot] (@dependabot[bot])
+* Bump fastlane-plugin-revenuecat_internal from `2d11430` to `21e02ec` (#1742) via dependabot[bot] (@dependabot[bot])
+* Bump fastlane-plugin-revenuecat_internal from `d24ab26` to `2d11430` (#1740) via dependabot[bot] (@dependabot[bot])
+* Replace unauthenticated SDKMAN install with SHA-pinned orb command (#1736) via Rick (@rickvdl)
+* Bump fastlane from 2.233.0 to 2.233.1 (#1737) via dependabot[bot] (@dependabot[bot])
+* Bump fastlane-plugin-revenuecat_internal from `b822f01` to `d24ab26` (#1734) via dependabot[bot] (@dependabot[bot])
+* Add web SDK to release automations (#1732) via Toni Rico (@tonidero)
+* Bump fastlane-plugin-revenuecat_internal from `58cccc8` to `b822f01` (#1730) via dependabot[bot] (@dependabot[bot])
+* Bump fastlane from 2.232.2 to 2.233.0 (#1731) via dependabot[bot] (@dependabot[bot])
+* Bump fastlane-plugin-revenuecat_internal from `a1eed48` to `58cccc8` (#1729) via dependabot[bot] (@dependabot[bot])
+
+## 10.0.1
+## RevenueCat SDK
+### 🐞 Bugfixes
+* [EXTERNAL] Fix Wasm incompatibility in web error processing (#1684) contributed by @brunovsiqueira (#1722) via Toni Rico (@tonidero)
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 18.1.0 (#1726) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 10.2.0](https://github.com/RevenueCat/purchases-android/releases/tag/10.2.0)
+  * [iOS 5.68.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.68.0)
+
+### 🔄 Other Changes
+* Add retry mechanism to Maestro e2e tests (#1723) via Antonio Pallares (@ajpallares)
+* Bump fastlane-plugin-revenuecat_internal from `20911d1` to `a1eed48` (#1725) via dependabot[bot] (@dependabot[bot])
+* Skip test cases list in maestro tests using launch arguments (#1714) via Antonio Pallares (@ajpallares)
+* Add CircleCI job for maestro E2E tests (#1699) via Antonio Pallares (@ajpallares)
+* Add maestro E2E test for purchase through paywall (#1698) via Antonio Pallares (@ajpallares)
+* Add maestro E2E test app (#1654) via Antonio Pallares (@ajpallares)
+
+## 10.0.0
+## RevenueCat SDK
+> [!WARNING]  
+> If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrect as consumables, RevenueCat will consume these purchases. This means that customers won't be able to restore them from version 10.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions. Please see more information in our [docs](https://www.revenuecat.com/docs/known-store-issues/play-billing-library/restore-consumable-purchases-bc8)
+
+### 💥 Breaking Changes
+This release updates to Billing Library 8.3.0 with min SDK supported of Android 6 (API 23), previously min was 21. It also removes a previous workaround used to be able to restore consumed one time products which is not available anymore.
+
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 18.0.0 (#1720) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 10.1.2](https://github.com/RevenueCat/purchases-android/releases/tag/10.1.2)
+  * [Android 10.1.1](https://github.com/RevenueCat/purchases-android/releases/tag/10.1.1)
+  * [Android 10.1.0](https://github.com/RevenueCat/purchases-android/releases/tag/10.1.0)
+  * [Android 10.0.2](https://github.com/RevenueCat/purchases-android/releases/tag/10.0.2)
+  * [Android 10.0.1](https://github.com/RevenueCat/purchases-android/releases/tag/10.0.1)
+  * [Android 9.29.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.29.1)
+  * [Android 10.0.0](https://github.com/RevenueCat/purchases-android/releases/tag/10.0.0)
+  * [iOS 5.67.2](https://github.com/RevenueCat/purchases-ios/releases/tag/5.67.2)
+
+### 🔄 Other Changes
+* Bump fastlane-plugin-revenuecat_internal from `894bb1b` to `20911d1` (#1719) via dependabot[bot] (@dependabot[bot])
+* Update CODEOWNERS default owner to @RevenueCat/sdk (#1717) via Antonio Pallares (@ajpallares)
+* Bump fastlane-plugin-revenuecat_internal from `ceecf91` to `894bb1b` (#1718) via dependabot[bot] (@dependabot[bot])
+* Bump addressable from 2.8.9 to 2.9.0 (#1715) via dependabot[bot] (@dependabot[bot])
+* Bump fastlane-plugin-revenuecat_internal from `6289be1` to `ceecf91` (#1713) via dependabot[bot] (@dependabot[bot])
+
+## 9.16.1
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.55.1 (#1710) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.29.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.29.0)
+  * [iOS 5.67.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.67.1)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.55.0 (#1709) via RevenueCat Git Bot (@RCGitBot)
+
+### 🔄 Other Changes
+* Bump fastlane-plugin-revenuecat_internal from `5d6e93f` to `6289be1` (#1708) via dependabot[bot] (@dependabot[bot])
+* feat: Run lint and tests against both stable and min Flutter version (#1707) via Rick (@rickvdl)
+* Bump fastlane-plugin-revenuecat_internal from `f11fe40` to `5d6e93f` (#1706) via dependabot[bot] (@dependabot[bot])
+
+## 9.16.0
+## RevenueCat SDK
+### ✨ New Features
+* Lower minimum Flutter SDK to 3.22.0 and Dart to 3.4.0 (#1704) via Rick (@rickvdl)
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.54.0 (#1703) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.28.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.28.1)
+  * [Android 9.28.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.28.0)
+  * [iOS 5.67.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.67.0)
+
+### 🔄 Other Changes
+* Bump fastlane-plugin-revenuecat_internal from `9a6911b` to `f11fe40` (#1701) via dependabot[bot] (@dependabot[bot])
+* security: pin GitHub Actions to SHA hashes (#1697) via Alfonso Embid-Desmet (@alfondotnet)
+* Bump activesupport from 7.2.3 to 7.2.3.1 (#1696) via dependabot[bot] (@dependabot[bot])
+* Merge release PR after deploy (#1694) via Antonio Pallares (@ajpallares)
+* Require PR approval before release tagging (#1693) via Antonio Pallares (@ajpallares)
+
+## 9.15.1
+## RevenueCat SDK
+### 🐞 Bugfixes
+* [PW-148] Add PaywallPresentationConfiguration for per-platform presentation style (#1623) via Facundo Menzella (@facumenzella)
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.53.0 (#1692) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.27.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.27.0)
+  * [iOS 5.66.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.66.0)
+
+## RevenueCatUI SDK
+### 🐞 Bugfixes
+* [PW-149] Fix PaywallView landscape issue (#1631) via Facundo Menzella (@facumenzella)
+
+### 🔄 Other Changes
+* Bump json from 2.18.1 to 2.19.2 (#1691) via dependabot[bot] (@dependabot[bot])
+
+## 9.15.0
+## RevenueCat SDK
+### ✨ New Features
+* Add trackCustomPaywallImpression API (#1679) via Rick (@rickvdl)
+* Adds Galaxy to the Store Enum (#1677) via Will Taylor (@fire-at-will)
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.52.0 (#1689) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.26.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.26.1)
+  * [Android 9.26.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.26.0)
+  * [Android 9.25.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.25.0)
+  * [Android 9.24.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.24.0)
+  * [iOS 5.65.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.65.0)
+  * [iOS 5.64.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.64.0)
+  * [iOS 5.63.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.63.0)
+  * [iOS 5.62.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.62.0)
+* Updates purchases-hybrid-common to 17.51.1 (#1687) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.26.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.26.1)
+  * [Android 9.26.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.26.0)
+  * [Android 9.25.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.25.0)
+  * [Android 9.24.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.24.0)
+  * [iOS 5.65.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.65.0)
+  * [iOS 5.64.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.64.0)
+  * [iOS 5.63.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.63.0)
+  * [iOS 5.62.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.62.0)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.51.0 (#1685) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.26.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.26.1)
+  * [Android 9.26.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.26.0)
+  * [Android 9.25.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.25.0)
+  * [Android 9.24.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.24.0)
+  * [iOS 5.65.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.65.0)
+  * [iOS 5.64.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.64.0)
+  * [iOS 5.63.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.63.0)
+  * [iOS 5.62.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.62.0)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.50.0 (#1682) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.26.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.26.1)
+  * [Android 9.26.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.26.0)
+  * [Android 9.25.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.25.0)
+  * [Android 9.24.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.24.0)
+  * [iOS 5.65.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.65.0)
+  * [iOS 5.64.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.64.0)
+  * [iOS 5.63.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.63.0)
+  * [iOS 5.62.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.62.0)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.49.0 (#1680) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.26.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.26.1)
+  * [Android 9.26.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.26.0)
+  * [Android 9.25.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.25.0)
+  * [Android 9.24.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.24.0)
+  * [iOS 5.65.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.65.0)
+  * [iOS 5.64.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.64.0)
+  * [iOS 5.63.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.63.0)
+  * [iOS 5.62.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.62.0)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.48.0 (#1678) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.26.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.26.1)
+  * [Android 9.26.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.26.0)
+  * [Android 9.25.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.25.0)
+  * [Android 9.24.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.24.0)
+  * [iOS 5.65.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.65.0)
+  * [iOS 5.64.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.64.0)
+  * [iOS 5.63.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.63.0)
+  * [iOS 5.62.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.62.0)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.47.0 (#1676) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.26.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.26.1)
+  * [Android 9.26.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.26.0)
+  * [Android 9.25.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.25.0)
+  * [Android 9.24.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.24.0)
+  * [iOS 5.65.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.65.0)
+  * [iOS 5.64.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.64.0)
+  * [iOS 5.63.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.63.0)
+  * [iOS 5.62.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.62.0)
+
+## RevenueCatUI SDK
+### ✨ New Features
+* Add number and boolean custom variable types (#1683) via Facundo Menzella (@facumenzella)
+
+### 🔄 Other Changes
+* Bump fastlane-plugin-revenuecat_internal from `3e8c384` to `9a6911b` (#1688) via dependabot[bot] (@dependabot[bot])
+* Bump fastlane-plugin-revenuecat_internal from `e146447` to `3e8c384` (#1681) via dependabot[bot] (@dependabot[bot])
+
+## 9.14.0
+## RevenueCat SDK
+### ✨ New Features
+* Add setAppstackAttributionParams API (#1671) via Rick (@rickvdl)
+
+## 9.13.2
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.46.1 (#1673) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.23.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.23.1)
+  * [Android 9.23.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.23.0)
+  * [iOS 5.61.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.61.0)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.46.0 (#1672) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.23.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.23.1)
+  * [Android 9.23.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.23.0)
+  * [iOS 5.61.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.61.0)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.45.0 (#1669) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.23.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.23.1)
+  * [Android 9.23.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.23.0)
+  * [iOS 5.61.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.61.0)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.44.0 (#1668) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.23.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.23.1)
+  * [Android 9.23.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.23.0)
+  * [iOS 5.61.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.61.0)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.43.0 (#1666) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.23.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.23.1)
+  * [Android 9.23.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.23.0)
+  * [iOS 5.61.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.61.0)
+
+### 🔄 Other Changes
+* Bump fastlane-plugin-revenuecat_internal from `f5c099b` to `e146447` (#1670) via dependabot[bot] (@dependabot[bot])
+* Bump fastlane-plugin-revenuecat_internal from `8cd957f` to `f5c099b` (#1665) via dependabot[bot] (@dependabot[bot])
+
+## 9.13.1
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.42.0 (#1662) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.22.2](https://github.com/RevenueCat/purchases-android/releases/tag/9.22.2)
+  * [iOS 5.60.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.60.0)
+
+### 🔄 Other Changes
+* Fix CocoaPods retry job names breaking GitHub required checks (#1663) via Antonio Pallares (@ajpallares)
+
+## 9.13.0
+## RevenueCatUI SDK
+### ✨ New Features
+* Add PurchaseLogic support to PaywallView (#1657) via Rick (@rickvdl)
+
+### 🔄 Other Changes
+* Update sdks-common-config orb to 3.13.0 (#1660) via Cesar de la Vega (@vegaro)
+* Bump fastlane-plugin-revenuecat_internal from `ea6276c` to `8cd957f` (#1659) via dependabot[bot] (@dependabot[bot])
+* Bump fastlane from 2.232.1 to 2.232.2 (#1658) via dependabot[bot] (@dependabot[bot])
+
+## 9.12.3
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.41.1 (#1652) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.22.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.22.1)
+
+### 🔄 Other Changes
+* Enable pod update retry for bump-phc branches (#1629) via Facundo Menzella (@facumenzella)
+* Bump fastlane-plugin-revenuecat_internal to ea6276c (#1649) via Facundo Menzella (@facumenzella)
+* Enable auto-merge for automatic PHC bump PRs (#1644) via Facundo Menzella (@facumenzella)
+* Add .claude/ to .gitignore and guardrails to AGENTS.md (#1645) via Facundo Menzella (@facumenzella)
+
+## 9.12.2
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.41.0 (#1643) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.22.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.22.0)
+  * [iOS 5.59.2](https://github.com/RevenueCat/purchases-ios/releases/tag/5.59.2)
+  * [iOS 5.59.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.59.1)
+
+## RevenueCatUI SDK
+### 🐞 Bugfixes
+* Fix custom variables not working on Android paywalls (#1647) via Facundo Menzella (@facumenzella)
+
+### 🔄 Other Changes
+* Bump nokogiri from 1.19.0 to 1.19.1 (#1642) via dependabot[bot] (@dependabot[bot])
+
+## 9.12.1
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.39.0 (#1637) via RevenueCat Git Bot (@RCGitBot)
+  * [iOS 5.59.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.59.0)
+  * [iOS 5.58.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.58.1)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.37.0 (#1634) via RevenueCat Git Bot (@RCGitBot)
+  * [iOS 5.59.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.59.0)
+  * [iOS 5.58.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.58.1)
+
+### 🔄 Other Changes
+* Add auto-merge workflow for PHC dependency updates (#1638) via Facundo Menzella (@facumenzella)
+* Bump Ruby to 3.2.0 for CI danger job (#1636) via Facundo Menzella (@facumenzella)
+* Add CLAUDE.md and AGENTS.md for AI assistant guidance (#1632) via Facundo Menzella (@facumenzella)
+* Bump fastlane-plugin-revenuecat_internal from `e6454e3` to `afc9219` (#1635) via dependabot[bot] (@dependabot[bot])
+
+## 9.12.0
+## RevenueCat SDK
+### ✨ New Features
+* [SDK-4250] Add webCheckoutUrl to Offering and Package models (#1622) via Toni Rico (@tonidero)
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.36.0 (#1628) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.21.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.21.0)
+  * [Android 9.20.2](https://github.com/RevenueCat/purchases-android/releases/tag/9.20.2)
+  * [iOS 5.58.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.58.0)
+  * [iOS 5.57.2](https://github.com/RevenueCat/purchases-ios/releases/tag/5.57.2)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.35.0 (#1626) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.21.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.21.0)
+  * [Android 9.20.2](https://github.com/RevenueCat/purchases-android/releases/tag/9.20.2)
+  * [iOS 5.58.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.58.0)
+  * [iOS 5.57.2](https://github.com/RevenueCat/purchases-ios/releases/tag/5.57.2)
+
+## RevenueCatUI SDK
+### ✨ New Features
+* Add customVariables support for paywall APIs (#1615) via Facundo Menzella (@facumenzella)
+
+### 🔄 Other Changes
+* Bump faraday from 1.10.4 to 1.10.5 (#1630) via dependabot[bot] (@dependabot[bot])
+
+## 9.11.1
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.33.0 (#1616) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.20.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.20.1)
+  * [iOS 5.57.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.57.1)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.32.0 (#1613) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.20.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.20.1)
+  * [iOS 5.57.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.57.1)
+
+## RevenueCatUI SDK
+### 🐞 Bugfixes
+* fix: Fix memory leak in PaywallView causing video to keep playing after dismissal (#1614) via Facundo Menzella (@facumenzella)
+
+### 🔄 Other Changes
+* Bump fastlane from 2.232.0 to 2.232.1 (#1625) via dependabot[bot] (@dependabot[bot])
+* Add pod update with retry for CocoaPods propagation issues (#1618) via Facundo Menzella (@facumenzella)
+* Bump fastlane from 2.231.1 to 2.232.0 (#1619) via dependabot[bot] (@dependabot[bot])
+* Fixed offerings order in purchase tester app not being stable (#1617) via Rick (@rickvdl)
+
+## 9.11.0
+## RevenueCat SDK
+### ✨ New Features
+* Update `syncAmazonPurchase` to support `purchaseTime` (#1607) via Toni Rico (@tonidero)
+* Implemented additional APIs for getting the price per period as formatted string or double value (#1603) via Rick (@rickvdl)
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.31.0 (#1610) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.20.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.20.0)
+  * [Android 9.19.4](https://github.com/RevenueCat/purchases-android/releases/tag/9.19.4)
+  * [iOS 5.57.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.57.0)
+  * [iOS 5.56.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.56.1)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.30.2 (#1605) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.20.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.20.0)
+  * [Android 9.19.4](https://github.com/RevenueCat/purchases-android/releases/tag/9.19.4)
+  * [iOS 5.57.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.57.0)
+  * [iOS 5.56.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.56.1)
+
+### 🔄 Other Changes
+* Add missing 9.10.7 changelog entry (#1611) via Facundo Menzella (@facumenzella)
+* Added LeakCanary to the purchase tester example app on Android (#1608) via Rick (@rickvdl)
+
+## 9.10.8
+## RevenueCat SDK
+### 🐞 Bugfixes
+* Fix iOS setPostHogUserID not working due to argument key typo (#1599) via Lim Hoang (@limdauto)
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.30.0 (#1600) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.19.3](https://github.com/RevenueCat/purchases-android/releases/tag/9.19.3)
+  * [Android 9.19.2](https://github.com/RevenueCat/purchases-android/releases/tag/9.19.2)
+  * [Android 9.19.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.19.1)
+  * [iOS 5.56.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.56.0)
+  * [iOS 5.55.3](https://github.com/RevenueCat/purchases-ios/releases/tag/5.55.3)
+  * [iOS 5.55.2](https://github.com/RevenueCat/purchases-ios/releases/tag/5.55.2)
+  * [iOS 5.55.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.55.1)
+  * [iOS 5.55.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.55.0)
+* [RENOVATE] Update dependency gradle to v8.14.4 (#1597) via RevenueCat Git Bot (@RCGitBot)
+
+### 🔄 Other Changes
+* Bump fastlane from 2.231.0 to 2.231.1 (#1596) via dependabot[bot] (@dependabot[bot])
+* Bump fastlane from 2.230.0 to 2.231.0 (#1595) via dependabot[bot] (@dependabot[bot])
+
+## 9.10.7
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.28.1 (#1593) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.19.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.19.1)
+  * [iOS 5.55.2](https://github.com/RevenueCat/purchases-ios/releases/tag/5.55.2)
+  * [iOS 5.55.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.55.1)
+  * [iOS 5.55.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.55.0)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.28.0 (#1592) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.19.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.19.1)
+  * [iOS 5.55.2](https://github.com/RevenueCat/purchases-ios/releases/tag/5.55.2)
+  * [iOS 5.55.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.55.1)
+  * [iOS 5.55.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.55.0)
+
+## 9.10.6
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.27.1 (#1590) via RevenueCat Git Bot (@RCGitBot)
+  * [iOS 5.54.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.54.1)
+
+## 9.10.5
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.27.0 (#1585) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.19.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.19.0)
+  * [iOS 5.54.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.54.0)
+  * [iOS 5.53.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.53.0)
+
+## RevenueCat UI SDK
+### Paywalls
+#### ✨ New Features
+* Add exit offers support
+
+### 🔄 Other Changes
+* Update `missingDimensionStrategy` for local development (#1584) via Cesar de la Vega (@vegaro)
+
+## 9.10.4
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.26.1 (#1582) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.18.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.18.1)
+  * [iOS 5.52.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.52.1)
+
+## 9.10.3
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.26.0 (#1580) via RevenueCat Git Bot (@RCGitBot)
+  * [iOS 5.52.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.52.0)
+
+## 9.10.2
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.25.0 (#1576) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.18.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.18.0)
+  * [Android 9.17.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.17.1)
+  * [Android 9.17.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.17.0)
+  * [Android 9.16.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.16.0)
+  * [iOS 5.51.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.51.1)
+  * [iOS 5.51.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.51.0)
+
+### 🔄 Other Changes
+* Bump fastlane-plugin-revenuecat_internal from `76a3a08` to `e6454e3` (#1578) via dependabot[bot] (@dependabot[bot])
+* Improved the Exception message if the MainActivity is not a subclass of FlutterFragmentActivity when displaying a PaywallView (#1577) via Rick (@rickvdl)
+* Bump fastlane from 2.229.1 to 2.230.0 (#1574) via dependabot[bot] (@dependabot[bot])
+
+## 9.10.1
+> [!WARNING]  
+> If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
+
+
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.24.0 (#1572) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.15.5](https://github.com/RevenueCat/purchases-android/releases/tag/9.15.5)
+  * [Android 9.15.4](https://github.com/RevenueCat/purchases-android/releases/tag/9.15.4)
+  * [iOS 5.50.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.50.1)
+* [RENOVATE] Update build-dependencies to v8.13.2 (#1571) via RevenueCat Git Bot (@RCGitBot)
+
+## 9.10.0
+> [!WARNING]  
+> If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
+
+
+## RevenueCat SDK
+### ✨ New Features
+* Add `diagnosticsEnabled` configuration option (#1569) via Toni Rico (@tonidero)
+* [EXTERNAL] Add support for preferredUILocaleOverride to Purchases Flutter SDK (#1561) via @marcorizza (#1562) via Antonio Pallares (@ajpallares)
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.23.0 (#1566) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.15.3](https://github.com/RevenueCat/purchases-android/releases/tag/9.15.3)
+  * [Android 9.15.2](https://github.com/RevenueCat/purchases-android/releases/tag/9.15.2)
+  * [iOS 5.50.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.50.0)
+  * [iOS 5.49.3](https://github.com/RevenueCat/purchases-ios/releases/tag/5.49.3)
+
+### 🔄 Other Changes
+* Updated CircleCI macOS executor from m1 to m4 to avoid deprecation (#1567) via Rick (@rickvdl)
+* Bump fastlane-plugin-revenuecat_internal from `efca663` to `76a3a08` (#1565) via dependabot[bot] (@dependabot[bot])
+* Fix version of PHC in Swift Package manifest for mac (#1563) via Antonio Pallares (@ajpallares)
+
+## 9.9.10
+> [!WARNING]  
+> If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
+
+
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.21.2 (#1559) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.15.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.15.1)
+  * [iOS 5.49.2](https://github.com/RevenueCat/purchases-ios/releases/tag/5.49.2)
+  * [iOS 5.49.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.49.1)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.21.1 (#1557) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.15.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.15.1)
+  * [iOS 5.49.2](https://github.com/RevenueCat/purchases-ios/releases/tag/5.49.2)
+  * [iOS 5.49.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.49.1)
+
+## 9.9.9
+> [!WARNING]  
+> If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
+
+
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.21.0 (#1555) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.15.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.15.0)
+  * [Android 9.14.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.14.1)
+  * [iOS 5.49.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.49.0)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.20.0 (#1552) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.15.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.15.0)
+  * [Android 9.14.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.14.1)
+  * [iOS 5.49.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.49.0)
+
+### 🔄 Other Changes
+* Bump fastlane from 2.229.0 to 2.229.1 (#1554) via dependabot[bot] (@dependabot[bot])
+* Bump fastlane from 2.228.0 to 2.229.0 (#1553) via dependabot[bot] (@dependabot[bot])
+* Bump fastlane-plugin-revenuecat_internal from `083ced9` to `efca663` (#1551) via dependabot[bot] (@dependabot[bot])
+
+## 9.9.8
+> [!WARNING]  
+> If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
+
+
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.19.1 (#1548) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.14.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.14.1)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.19.0 (#1547) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.14.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.14.1)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.18.1 (#1543) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.14.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.14.1)
+
+### 🔄 Other Changes
+* Bump fastlane-plugin-revenuecat_internal from `1e3e3fd` to `083ced9` (#1544) via dependabot[bot] (@dependabot[bot])
+
+## 9.9.7
+> [!WARNING]  
+> If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
+
+
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.18.0 (#1540) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.14.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.14.0)
+  * [iOS 5.48.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.48.0)
+  * [iOS 5.47.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.47.1)
+* [RENOVATE] Update build-dependencies to v8.13.1 (#1538) via RevenueCat Git Bot (@RCGitBot)
+
+## 9.9.6
+> [!WARNING]  
+> If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
+
+
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.17.0 (#1534) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.13.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.13.0)
+  * [iOS 5.47.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.47.0)
+
+### 🔄 Other Changes
+* Bump fastlane-plugin-revenuecat_internal from `9362b21` to `1e3e3fd` (#1536) via dependabot[bot] (@dependabot[bot])
+* Bump fastlane-plugin-revenuecat_internal from `525d48c` to `9362b21` (#1535) via dependabot[bot] (@dependabot[bot])
+
+## 9.9.5
+> [!WARNING]  
+> If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
+
+
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.16.1 (#1532) via RevenueCat Git Bot (@RCGitBot)
+  * [iOS 5.46.3](https://github.com/RevenueCat/purchases-ios/releases/tag/5.46.3)
+  * [iOS 5.46.2](https://github.com/RevenueCat/purchases-ios/releases/tag/5.46.2)
+
+## 9.9.4
+> [!WARNING]  
+> If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
+
+
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.16.0 (#1529) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.12.2](https://github.com/RevenueCat/purchases-android/releases/tag/9.12.2)
+  * [iOS 5.46.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.46.1)
+
+### 🔄 Other Changes
+* Add DEVELOPMENT instructions and fix `enableLocalBuild` task (#1520) via Cesar de la Vega (@vegaro)
+
+## 9.9.3
+> [!WARNING]  
+> If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
+
+
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.15.1 (#1524) via RevenueCat Git Bot (@RCGitBot)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.15.0 (#1521) via RevenueCat Git Bot (@RCGitBot)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.14.0 (#1519) via RevenueCat Git Bot (@RCGitBot)
+
+## 9.9.2
+> [!WARNING]  
+> If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
+
+
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.13.0 (#1517) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.12.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.12.1)
+  * [iOS 5.46.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.46.0)
+  * [iOS 5.45.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.45.1)
+
+## 9.9.1
+> [!WARNING]  
+> If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
+
+
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.12.0 (#1510) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.12.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.12.0)
+  * [iOS 5.45.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.45.0)
+
+## 9.9.0
+> [!WARNING]  
+> If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
+
+
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.11.0 (#1507) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.11.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.11.0)
+  * [Android 9.10.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.10.0)
+  * [iOS 5.44.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.44.1)
+  * [iOS 5.44.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.44.0)
+
+## RevenueCatUI SDK
+### Customer Center
+#### ✨ New Features
+* Add support for customer center view without `presentCustomerCenter` helper (#1476) via Facundo Menzella (@facumenzella)
+
+### 🔄 Other Changes
+* Bump fastlane-plugin-revenuecat_internal from `25c7fb8` to `525d48c` (#1506) via dependabot[bot] (@dependabot[bot])
+* Update Xcode versions to avoid CircleCI deprecation (#1505) via Antonio Pallares (@ajpallares)
+
+## 9.8.0
+> [!WARNING]  
+> If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
+
+
+## RevenueCat SDK
+### ✨ New Features
+* Add support for the Test Store (#1503) via Antonio Pallares (@ajpallares)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.10.0 (#1502) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.9.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.9.0)
+  * [Android 9.8.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.8.1)
+  * [iOS 5.43.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.43.0)
+  * [iOS 5.42.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.42.0)
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.9.1 (#1500) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.9.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.9.0)
+  * [Android 9.8.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.8.1)
+  * [iOS 5.43.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.43.0)
+  * [iOS 5.42.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.42.0)
+
+### 🔄 Other Changes
+* Bump fastlane-plugin-revenuecat_internal from `3f7fffc` to `25c7fb8` (#1501) via dependabot[bot] (@dependabot[bot])
+
+## 9.7.1
+> [!WARNING]  
+> If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
+
+
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.9.0 (#1494) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.8.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.8.0)
+  * [iOS 5.41.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.41.0)
+
+### 🔄 Other Changes
+* Bump fastlane-plugin-revenuecat_internal from `b35cae0` to `3f7fffc` (#1498) via dependabot[bot] (@dependabot[bot])
+* Bump fastlane-plugin-revenuecat_internal from `a8770fd` to `b35cae0` (#1497) via dependabot[bot] (@dependabot[bot])
+* Bump fastlane-plugin-revenuecat_internal from `e555afb` to `a8770fd` (#1496) via dependabot[bot] (@dependabot[bot])
+* Update PHC to 17.9.0 in Package.swift of our SDKs (#1495) via Toni Rico (@tonidero)
+* Add `winBackOffer` parameter to `PurchaseParams` (#1474) via Toni Rico (@tonidero)
+* Bump fastlane-plugin-revenuecat_internal from `7508f17` to `e555afb` (#1493) via dependabot[bot] (@dependabot[bot])
+* Bump fastlane-plugin-revenuecat_internal from `1593f78` to `7508f17` (#1492) via dependabot[bot] (@dependabot[bot])
+* Add CODEOWNERS (#1489) via Antonio Pallares (@ajpallares)
+* Update changelog for release v8.11.0 (#1488) via Antonio Pallares (@ajpallares)
+
+## 9.7.0
+> [!WARNING]  
+> If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
+
+
+## RevenueCat SDK
+### ✨ New Features
+* Add PostHog user ID convenience setter  (#1477) via Cody Kerns (@codykerns)
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.8.0 (#1481) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.7.2](https://github.com/RevenueCat/purchases-android/releases/tag/9.7.2)
+  * [Android 9.7.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.7.1)
+  * [iOS 5.40.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.40.0)
+  * [iOS 5.39.3](https://github.com/RevenueCat/purchases-ios/releases/tag/5.39.3)
+  * [iOS 5.39.2](https://github.com/RevenueCat/purchases-ios/releases/tag/5.39.2)
+  * [iOS 5.39.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.39.1)
+
+### 🔄 Other Changes
+* Bump fastlane-plugin-revenuecat_internal from `e1c0e04` to `1593f78` (#1484) via dependabot[bot] (@dependabot[bot])
+* Bump fastlane-plugin-revenuecat_internal from `a6dc551` to `e1c0e04` (#1480) via dependabot[bot] (@dependabot[bot])
+
+## 9.6.2
+> [!WARNING]  
+> If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
+
+
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.7.0 (#1470) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.7.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.7.0)
+  * [iOS 5.39.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.39.0)
+
+## 9.6.1
+> [!WARNING]  
+> If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
+
+
+## RevenueCat SDK
+### 🐞 Bugfixes
+* Fix crash when calling new purchase w/ purchase params function (#1472) via Will Taylor (@fire-at-will)
+
+### 🔄 Other Changes
+* Bump fastlane-plugin-revenuecat_internal from `489faef` to `a6dc551` (#1469) via dependabot[bot] (@dependabot[bot])
+
+## 9.6.0
+> [!WARNING]  
+> If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
+
+
+## RevenueCat SDK
+### ✨ New Features
+* Add `customerEmail` param to `PurchaseParams` (#1463) via Toni Rico (@tonidero)
+### 🐞 Bugfixes
+* Pass `presentedOfferingContext` to natives when presenting paywall or displaying PaywallView (#1460) via Toni Rico (@tonidero)
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.6.0 (#1465) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.6.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.6.0)
+  * [iOS 5.38.2](https://github.com/RevenueCat/purchases-ios/releases/tag/5.38.2)
+  * [iOS 5.38.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.38.1)
+  * [iOS 5.38.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.38.0)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.5.1 (#1462) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.6.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.6.0)
+  * [iOS 5.38.2](https://github.com/RevenueCat/purchases-ios/releases/tag/5.38.2)
+  * [iOS 5.38.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.38.1)
+  * [iOS 5.38.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.38.0)
+* [RENOVATE] Update build-dependencies to v8.13.0 (#1459) via RevenueCat Git Bot (@RCGitBot)
+
+### 🔄 Other Changes
+* Update bundle dependencies (#1467) via Cesar de la Vega (@vegaro)
+* Add `purchase` method with `PurchaseParams` object (#1461) via Toni Rico (@tonidero)
+* Default to Swift Package Manager in Purchase Tester (instead of CocoaPods) (#1454) via Antonio Pallares (@ajpallares)
+
+## 9.5.0
+## RevenueCat SDK
+> [!WARNING]  
+> If you don't have a login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
+
+### ✨ New Features
+* Support integration via Swift Package Manager (#1452) via Antonio Pallares (@ajpallares)
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.5.0 (#1455) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.5.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.5.0)
+  * [iOS 5.37.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.37.0)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.4.0 (#1451) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.5.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.5.0)
+  * [iOS 5.37.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.37.0)
+
+### 🔄 Other Changes
+* Fix release scripts (#1456) via Toni Rico (@tonidero)
+
+## 9.4.0
+## RevenueCat SDK
+> [!WARNING]  
+> If you don't have a login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
+
+### ✨ New Features
+* Virtual Currency Support for Flutter Web (#1443) via Will Taylor (@fire-at-will)
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.3.0 (#1446) via RevenueCat Git Bot (@RCGitBot)
+* [RENOVATE] Update build-dependencies to v8.12.2 (#1448) via RevenueCat Git Bot (@RCGitBot)
+
+### 🔄 Other Changes
+* Add warning with 9.x issues to all versions since 9.0.0 in CHANGELOG (#1449) via Toni Rico (@tonidero)
+
+## 9.3.0
+## RevenueCat SDK
+> [!WARNING]  
+> If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
+
+### ✨ New Features
+* Support `automaticDeviceIdentifierCollectionEnabled` when configuring SDK (#1445) via Toni Rico (@tonidero)
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.2.0 (#1444) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.4.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.4.0)
+  * [iOS 5.36.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.36.0)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.1.0 (#1442) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.4.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.4.0)
+  * [iOS 5.36.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.36.0)
+
+## 9.2.3
+## RevenueCat SDK
+> [!WARNING]  
+> If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
+
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.0.0 (#1439) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.3.2](https://github.com/RevenueCat/purchases-android/releases/tag/9.3.2)
+  * [Android 9.3.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.3.1)
+  * [Android 9.3.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.3.0)
+  * [iOS 5.35.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.35.1)
+  * [iOS 5.35.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.35.0)
+* [RENOVATE] Update build-dependencies to v8.12.1 (#1437) via RevenueCat Git Bot (@RCGitBot)
+
+## 9.2.2
+## RevenueCat SDK
+> [!WARNING]  
+> If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
+
+### 🐞 Bugfixes
+* Fix WASM parsing (#1434) via Toni Rico (@tonidero)
+
+### 🔄 Other Changes
+* Add purchase_tester dependency to fix issues in latest version of flutter (#1435) via Toni Rico (@tonidero)
+
+## 9.2.1
+## RevenueCat SDK
+> [!WARNING]  
+> If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
+
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 16.2.2 (#1431) via RevenueCat Git Bot (@RCGitBot)
+    * Includes a fix to properly localize the purchase flow on Web according to the browser locale.
+
+## 9.2.0
+## RevenueCat SDK
+> [!WARNING]  
+> If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
+
+### ✨ New Features
+* Support `setAttributes/setEmail/setDisplayName/setPhoneNumber` in Flutter Web (#1413) via Toni Rico (@tonidero)
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 16.2.0 (#1426) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.2.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.2.0)
+  * [iOS 5.34.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.34.0)
+* [RENOVATE] Update build-dependencies to v8.12.0 (#1424) via RevenueCat Git Bot (@RCGitBot)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 16.1.0 (#1421) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.2.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.2.0)
+  * [iOS 5.34.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.34.0)
+
+### 🔄 Other Changes
+* Add warning on V9 CHANGELOG (#1425) via Toni Rico (@tonidero)
+* Improve 9.0.0 changelog (#1422) via Toni Rico (@tonidero)
+
 ## 9.1.0
 ## RevenueCat SDK
+> [!WARNING]  
+> If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
+
 ### ✨ New Features
 * [iOS + Android] Virtual Currency Support (#1416) via Will Taylor (@fire-at-will)
 ### 📦 Dependency Updates
@@ -9,6 +974,10 @@
 
 ## 9.0.1
 ## RevenueCat SDK
+> [!WARNING]  
+> If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
+
 ### 📦 Dependency Updates
 * [AUTOMATIC BUMP] Updates purchases-hybrid-common to 16.0.1 (#1415) via RevenueCat Git Bot (@RCGitBot)
   * [Android 9.1.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.1.1)
@@ -23,6 +992,10 @@
 ## RevenueCat SDK
 ### 💥 Breaking Changes
 * Play Billing Library 8 update
+
+> [!WARNING]  
+> If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
 
 This release updates the SDK to use Google Play Billing Library 8. This version of the Billing Library removed APIs to query for expired subscriptions and consumed one-time products, aside from other improvements. You can check the full list of changes here: https://developer.android.com/google/play/billing/release-notes#8-0-0
 
@@ -81,6 +1054,17 @@ switch (result) {
 ### 🔄 Other Changes
 * Bump fastlane from 2.227.2 to 2.228.0 (#1360) via dependabot[bot] (@dependabot[bot])
 * Bump fastlane-plugin-revenuecat_internal from `05ef095` to `7d97553` (#1381) via dependabot[bot] (@dependabot[bot])
+
+## 8.11.0
+## RevenueCat SDK
+### 📦 Dependency Updates
+* Updates purchases-hybrid-common to 14.3.0 (#1486) via Antonio Pallares (@ajpallares)
+  * [Android 8.24.0](https://github.com/RevenueCat/purchases-android/releases/tag/8.24.0)
+  * [Android 8.23.0](https://github.com/RevenueCat/purchases-android/releases/tag/8.23.0)
+  * [Android 8.22.1](https://github.com/RevenueCat/purchases-android/releases/tag/8.22.1)
+
+### 🔄 Other Changes
+* [V8] Prepare for next release (#1483) via Antonio Pallares (@ajpallares)
 
 ## 8.10.6
 ## RevenueCat SDK

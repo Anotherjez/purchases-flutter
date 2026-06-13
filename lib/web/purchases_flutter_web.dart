@@ -12,9 +12,9 @@ import '../purchases_flutter.dart';
 class PurchasesFlutterPlugin {
   static final _unknownErrorCode = '${PurchasesErrorCode.unknownError.index}';
   static final _configurationErrorCode = '${PurchasesErrorCode.configurationError.index}';
-  static const _purchasesHybridMappingsVersion = '16.1.0';
+  static const _purchasesHybridMappingsVersion = '18.14.1';
   static const _platformName = 'flutter';
-  static const _pluginVersion = '9.1.0';
+  static const _pluginVersion = '10.2.3';
   static const _purchasesHybridMappingsUrl =
       'https://cdn.jsdelivr.net/npm/@revenuecat/purchases-js-hybrid-mappings@$_purchasesHybridMappingsVersion/dist/index.umd.js';
 
@@ -123,6 +123,12 @@ class PurchasesFlutterPlugin {
           return _setPhoneNumber(call.arguments);
         case 'setDisplayName':
           return _setDisplayName(call.arguments);
+        case 'getVirtualCurrencies':
+          return _getVirtualCurrencies();
+        case 'invalidateVirtualCurrenciesCache':
+          return _invalidateVirtualCurrenciesCache();
+        case 'getCachedVirtualCurrencies':
+          return _getCachedVirtualCurrencies();
 
         case 'syncPurchases':
         case 'collectDeviceIdentifiers':
@@ -131,6 +137,11 @@ class PurchasesFlutterPlugin {
         case 'enableAdServicesAttributionTokenCollection':
         case 'setSimulatesAskToBuyInSandbox':
         case 'setAllowSharingStoreAccount':
+        case 'trackAdDisplayed':
+        case 'trackAdOpened':
+        case 'trackAdLoaded':
+        case 'trackAdRevenue':
+        case 'trackAdFailedToLoad':
           // No-op on web
           return Future.value();
 
@@ -149,9 +160,6 @@ class PurchasesFlutterPlugin {
         case 'purchaseProductWithWinBackOffer':
         case 'getEligibleWinBackOffersForProduct':
         case 'redeemWebPurchase':
-        case 'getVirtualCurrencies':
-        case 'invalidateVirtualCurrenciesCache':
-        case 'getCachedVirtualCurrencies':
           throw UnsupportedPlatformException();
 
         default:
@@ -239,6 +247,7 @@ class PurchasesFlutterPlugin {
     final options = {
       'packageIdentifier': packageIdentifier,
       'presentedOfferingContext': arguments['presentedOfferingContext'],
+      'customerEmail': arguments['customerEmail'],
     };
     return await _getMapFromInstanceMethod('purchasePackage', [options]);
   }
@@ -314,6 +323,16 @@ class PurchasesFlutterPlugin {
     _callInstanceMethod('setDisplayName', [displayName]);
   }
 
+  Future<Map<String, dynamic>> _getVirtualCurrencies() async =>
+    await _getMapFromInstanceMethod('getVirtualCurrencies', []);
+
+  Future<void> _invalidateVirtualCurrenciesCache() async {
+    _getInstance().callMethod('invalidateVirtualCurrenciesCache'.toJS);
+  }
+
+  Future<Map<String, dynamic>?> _getCachedVirtualCurrencies() async =>
+      _getNullableMapFromInstanceSyncMethod('getCachedVirtualCurrencies');
+    
   // Helper functions to handle JS interop
 
   Object? _callStaticMethod(
@@ -409,6 +428,20 @@ class PurchasesFlutterPlugin {
         .catchError((error) => throw _processError(error));
   }
 
+  /// Calls a synchronous instance method on PurchasesCommon and converts 
+  /// the result to a nullable Dart map.
+  ///
+  /// Returns null if the JS method returns null, otherwise returns the converted map.
+  Map<String, dynamic>? _getNullableMapFromInstanceSyncMethod(
+      String methodName,
+  ) {
+    final result = _getInstance().callMethod(methodName.toJS);
+    if (result == null) {
+      return null;
+    }
+    return _convertJsRecordToMap(result);
+  }
+
   List<JSAny?> _processArgs(List<dynamic> args) => <JSAny?>[
     for (final arg in args)
       switch (arg) {
@@ -425,23 +458,34 @@ class PurchasesFlutterPlugin {
   ];
 
   PlatformException _processError(dynamic error) {
-    if (error is JSObject && error.has('code')) {
-      final errorMap = _convertJsRecordToMap(error);
-      final code = errorMap['code'];
-      final message = errorMap['message'];
-      final underlyingErrorMessage = errorMap['underlyingErrorMessage'];
-      final finalMessage = '$message. $underlyingErrorMessage';
-      return PlatformException(
-        code: '$code',
-        message: finalMessage,
-        details: errorMap,
-      );
-    } else {
-      return PlatformException(
-        code: _unknownErrorCode,
-        message: error.toString(),
-      );
+    // Under dart2wasm, `error` may be a Dart exception or an opaque
+    // _JavaScriptError—neither is a subtype of JSAny, so the cast throws
+    // a TypeError. Catching it lets us fall through to the generic branch.
+    JSAny? jsAny;
+    try {
+      jsAny = error as JSAny?;
+    } on TypeError catch (e) {
+      debugPrint('Warning: error in _processError is not a JS interop type: $e');
     }
+    if (jsAny != null && jsAny.isA<JSObject>()) {
+      final jsObject = jsAny as JSObject;
+      if (jsObject.has('code')) {
+        final errorMap = _convertJsRecordToMap(jsObject);
+        final code = errorMap['code'];
+        final message = errorMap['message'];
+        final underlyingErrorMessage = errorMap['underlyingErrorMessage'];
+        final finalMessage = '$message. $underlyingErrorMessage';
+        return PlatformException(
+          code: '$code',
+          message: finalMessage,
+          details: errorMap,
+        );
+      }
+    }
+    return PlatformException(
+      code: _unknownErrorCode,
+      message: error.toString(),
+    );
   }
 
   Map<String, dynamic> _convertJsRecordToMap(JSAny? jsRecord) {

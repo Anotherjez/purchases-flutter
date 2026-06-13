@@ -9,6 +9,7 @@ import 'package:purchases_flutter/models/store_transaction.dart';
 // ignore_for_file: unused_element
 // ignore_for_file: unused_local_variable
 // ignore_for_file: deprecated_member_use
+// ignore_for_file: prefer_const_literals_to_create_immutables
 class _PurchasesFlutterApiTest {
   void _checkPresentPaywall(Offering? offering) async {
     Future<PaywallResult> f1 = RevenueCatUI.presentPaywall();
@@ -17,14 +18,112 @@ class _PurchasesFlutterApiTest {
         RevenueCatUI.presentPaywall(displayCloseButton: true);
     Future<PaywallResult> f4 = RevenueCatUI.presentPaywall(
         offering: offering, displayCloseButton: true);
+    Future<PaywallResult> f5 = RevenueCatUI.presentPaywall(
+      presentationConfiguration: const PaywallPresentationConfiguration(
+        ios: IOSPaywallPresentationStyle.fullScreen,
+      ),
+    );
 
-    Future<PaywallResult> f5 = RevenueCatUI.presentPaywallIfNeeded("test");
-    Future<PaywallResult> f6 =
-        RevenueCatUI.presentPaywallIfNeeded("test", displayCloseButton: true);
+    Future<PaywallResult> f6 = RevenueCatUI.presentPaywallIfNeeded("test");
     Future<PaywallResult> f7 =
+        RevenueCatUI.presentPaywallIfNeeded("test", displayCloseButton: true);
+    Future<PaywallResult> f8 =
         RevenueCatUI.presentPaywallIfNeeded("test", offering: offering);
-    Future<PaywallResult> f8 = RevenueCatUI.presentPaywallIfNeeded("test",
+    Future<PaywallResult> f9 = RevenueCatUI.presentPaywallIfNeeded("test",
         offering: offering, displayCloseButton: true);
+    Future<PaywallResult> f10 = RevenueCatUI.presentPaywallIfNeeded("test",
+      presentationConfiguration: const PaywallPresentationConfiguration(
+        ios: IOSPaywallPresentationStyle.fullScreen,
+      ),
+    );
+  }
+
+  void _checkPresentPaywallWithCustomVariables(Offering? offering) async {
+    Future<PaywallResult> f1 = RevenueCatUI.presentPaywall(
+      customVariables: {
+        'player_name': const CustomVariableValue.string('John')
+      },
+    );
+    Future<PaywallResult> f2 = RevenueCatUI.presentPaywall(
+      offering: offering,
+      customVariables: {
+        'player_name': const CustomVariableValue.string('John'),
+        'level': const CustomVariableValue.number(5),
+        'is_premium': const CustomVariableValue.boolean(true),
+      },
+    );
+    Future<PaywallResult> f3 = RevenueCatUI.presentPaywallIfNeeded(
+      "test",
+      customVariables: {
+        'player_name': const CustomVariableValue.string('John')
+      },
+    );
+  }
+
+  Widget _checkPaywallViewWithCustomVariables(Offering offering) {
+    return PaywallView(
+      offering: offering,
+      customVariables: {
+        'player_name': const CustomVariableValue.string('John'),
+        'level': const CustomVariableValue.number(42),
+        'is_premium': const CustomVariableValue.boolean(true),
+      },
+    );
+  }
+
+  void _checkPaywallPresentationConfiguration() {
+    const config1 = PaywallPresentationConfiguration();
+    PaywallPresentationConfiguration? nullableConfig;
+    const config2 = PaywallPresentationConfiguration(
+      ios: IOSPaywallPresentationStyle.fullScreen,
+    );
+    const config3 = PaywallPresentationConfiguration(
+      ios: IOSPaywallPresentationStyle.sheet,
+    );
+    const config4 = PaywallPresentationConfiguration(
+      android: AndroidPaywallPresentationStyle.fullScreen,
+    );
+    const config5 = PaywallPresentationConfiguration(
+      ios: IOSPaywallPresentationStyle.fullScreen,
+      android: AndroidPaywallPresentationStyle.fullScreen,
+    );
+
+    IOSPaywallPresentationStyle? iosStyle = config2.ios;
+    AndroidPaywallPresentationStyle? androidStyle = config4.android;
+
+    bool isFullScreen = iosStyle == IOSPaywallPresentationStyle.fullScreen;
+    bool isSheet = iosStyle == IOSPaywallPresentationStyle.sheet;
+  }
+
+  void _checkCustomVariableValue() {
+    // Create custom variable values of each type
+    CustomVariableValue stringValue = const CustomVariableValue.string('test');
+    CustomVariableValue numberValue = const CustomVariableValue.number(42);
+    CustomVariableValue booleanValue = const CustomVariableValue.boolean(true);
+
+    // Access the string representation
+    String value = stringValue.stringValue;
+    String numStr = numberValue.stringValue;
+    String boolStr = booleanValue.stringValue;
+
+    // StringCustomVariableValue
+    StringCustomVariableValue stringVariable =
+        const StringCustomVariableValue('test');
+    String directValue = stringVariable.value;
+    String stringValueFromSubtype = stringVariable.stringValue;
+
+    // NumberCustomVariableValue
+    NumberCustomVariableValue numberVariable =
+        const NumberCustomVariableValue(42);
+    double numDirectValue = numberVariable.value;
+    String numStringValue = numberVariable.stringValue;
+
+    // BooleanCustomVariableValue
+    BooleanCustomVariableValue booleanVariable =
+        const BooleanCustomVariableValue(true);
+    bool boolDirectValue = booleanVariable.value;
+    String boolStringValue = booleanVariable.stringValue;
+
   }
 
   void _checkPaywallResult(PaywallResult result) {
@@ -57,29 +156,22 @@ class _PurchasesFlutterApiTest {
   }
 
   Widget _checkPaywallViewWithListeners(
-      Offering offering,
-      bool displayCloseButton,
+    Offering offering,
+    bool displayCloseButton,
   ) {
     return Scaffold(
       body: Center(
         child: PaywallView(
           offering: offering,
           displayCloseButton: displayCloseButton,
-          onPurchaseStarted: (Package rcPackage) {
-          },
+          onPurchaseStarted: (Package rcPackage) {},
           onPurchaseCompleted:
-              (CustomerInfo customerInfo, StoreTransaction storeTransaction) {
-          },
-          onPurchaseCancelled: () {
-          },
-          onPurchaseError: (PurchasesError error) {
-          },
-          onRestoreCompleted: (CustomerInfo customerInfo) {
-          },
-          onRestoreError: (PurchasesError error) {
-          },
-          onDismiss: () {
-          },
+              (CustomerInfo customerInfo, StoreTransaction storeTransaction) {},
+          onPurchaseCancelled: () {},
+          onPurchaseError: (PurchasesError error) {},
+          onRestoreCompleted: (CustomerInfo customerInfo) {},
+          onRestoreError: (PurchasesError error) {},
+          onDismiss: () {},
         ),
       ),
     );
@@ -110,7 +202,7 @@ class _PurchasesFlutterApiTest {
   }
 
   Widget _checkOriginalTemplatePaywallFooterViewWithOffering(
-      Offering offering,
+    Offering offering,
   ) {
     return Scaffold(
       body: Center(
@@ -138,26 +230,19 @@ class _PurchasesFlutterApiTest {
   }
 
   Widget _checkOriginalTemplatePaywallFooterViewWithListeners(
-      Offering offering,
+    Offering offering,
   ) {
     return Scaffold(
       body: Center(
         child: OriginalTemplatePaywallFooterView(
-          onPurchaseStarted: (Package rcPackage) {
-          },
+          onPurchaseStarted: (Package rcPackage) {},
           onPurchaseCompleted:
-              (CustomerInfo customerInfo, StoreTransaction storeTransaction) {
-          },
-          onPurchaseCancelled: () {
-          },
-          onPurchaseError: (PurchasesError error) {
-          },
-          onRestoreCompleted: (CustomerInfo customerInfo) {
-          },
-          onRestoreError: (PurchasesError error) {
-          },
-          onDismiss: () {
-          },
+              (CustomerInfo customerInfo, StoreTransaction storeTransaction) {},
+          onPurchaseCancelled: () {},
+          onPurchaseError: (PurchasesError error) {},
+          onRestoreCompleted: (CustomerInfo customerInfo) {},
+          onRestoreError: (PurchasesError error) {},
+          onDismiss: () {},
           contentCreator: (double bottomPadding) {
             return Container();
           },
@@ -170,21 +255,14 @@ class _PurchasesFlutterApiTest {
     return Scaffold(
       body: Center(
         child: PaywallFooterView(
-          onPurchaseStarted: (Package rcPackage) {
-          },
+          onPurchaseStarted: (Package rcPackage) {},
           onPurchaseCompleted:
-              (CustomerInfo customerInfo, StoreTransaction storeTransaction) {
-          },
-          onPurchaseCancelled: () {
-          },
-          onPurchaseError: (PurchasesError error) {
-          },
-          onRestoreCompleted: (CustomerInfo customerInfo) {
-          },
-          onRestoreError: (PurchasesError error) {
-          },
-          onDismiss: () {
-          },
+              (CustomerInfo customerInfo, StoreTransaction storeTransaction) {},
+          onPurchaseCancelled: () {},
+          onPurchaseError: (PurchasesError error) {},
+          onRestoreCompleted: (CustomerInfo customerInfo) {},
+          onRestoreError: (PurchasesError error) {},
+          onDismiss: () {},
           contentCreator: (double bottomPadding) {
             return Container();
           },
@@ -193,7 +271,77 @@ class _PurchasesFlutterApiTest {
     );
   }
 
+  void _checkPurchaseLogicResult(PurchaseLogicResult result) {
+    switch (result) {
+      case PurchaseLogicResult.success:
+      case PurchaseLogicResult.cancellation:
+      case PurchaseLogicResult.error:
+        break;
+    }
+  }
+
+  Widget _checkPaywallViewWithPurchaseLogic(PaywallPurchaseLogic logic) {
+    return Scaffold(
+      body: Center(
+        child: PaywallView(
+          purchaseLogic: logic,
+        ),
+      ),
+    );
+  }
+
   void _checkPresentCustomerCenter() async {
     Future<void> f1 = RevenueCatUI.presentCustomerCenter();
+    Future<void> f2 = RevenueCatUI.presentCustomerCenter(
+      onRestoreStarted: () {},
+    );
+  }
+
+  void _checkPresentCustomerCenterWithCallbacks() async {
+    Future<void> f1 = RevenueCatUI.presentCustomerCenter(
+      onRestoreStarted: () {},
+      onRestoreCompleted: (CustomerInfo customerInfo) {},
+      onRestoreFailed: (PurchasesError error) {},
+      onShowingManageSubscriptions: () {},
+      onRefundRequestStarted: (String productIdentifier) {},
+      onRefundRequestCompleted: (String productIdentifier, String status) {},
+      onFeedbackSurveyCompleted: (String optionIdentifier) {},
+      onManagementOptionSelected: (String optionIdentifier, String? url) {},
+      onCustomActionSelected:
+          (String actionIdentifier, String? purchaseIdentifier) {},
+      onPromotionalOfferSucceeded: (CustomerInfo customerInfo,
+          StoreTransaction transaction, String offerId) {},
+    );
+  }
+
+  Widget _checkCustomerCenterView() {
+    return const Scaffold(
+      body: Center(
+        child: CustomerCenterView(),
+      ),
+    );
+  }
+
+  Widget _checkCustomerCenterViewWithCallbacks() {
+    return Scaffold(
+      body: Center(
+        child: CustomerCenterView(
+          onDismiss: () {},
+          onRestoreStarted: () {},
+          onRestoreCompleted: (CustomerInfo customerInfo) {},
+          onRestoreFailed: (PurchasesError error) {},
+          onShowingManageSubscriptions: () {},
+          onRefundRequestStarted: (String productIdentifier) {},
+          onRefundRequestCompleted:
+              (String productIdentifier, String status) {},
+          onFeedbackSurveyCompleted: (String optionIdentifier) {},
+          onManagementOptionSelected: (String optionIdentifier, String? url) {},
+          onCustomActionSelected:
+              (String actionIdentifier, String? purchaseIdentifier) {},
+          onPromotionalOfferSucceeded: (CustomerInfo customerInfo,
+              StoreTransaction transaction, String offerId) {},
+        ),
+      ),
+    );
   }
 }

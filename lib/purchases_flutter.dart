@@ -1,7 +1,10 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:meta/meta.dart';
 
 import 'object_wrappers.dart';
 
@@ -192,9 +195,30 @@ class Purchases {
             purchasesConfiguration.entitlementVerificationMode.name,
         'pendingTransactionsForPrepaidPlansEnabled':
             purchasesConfiguration.pendingTransactionsForPrepaidPlansEnabled,
+        'automaticDeviceIdentifierCollectionEnabled':
+            purchasesConfiguration.automaticDeviceIdentifierCollectionEnabled,
+        'diagnosticsEnabled': purchasesConfiguration.diagnosticsEnabled,
+        'preferredUILocaleOverride':
+            purchasesConfiguration.preferredUILocaleOverride,
       },
     );
   }
+
+  /// Overrides the preferred UI locale used by RevenueCat UI components.
+  ///
+  /// When provided, the SDK will use the specified locale instead of the system default.
+  /// Both "es-ES" and "es_ES" formats are supported.
+  ///
+  /// Pass null to revert to the system default.
+  ///
+  /// [locale] The locale identifier (e.g., "de-DE", "es_ES") or null to use the system default.
+  static Future<void> overridePreferredUILocale(String? locale) =>
+      _channel.invokeMethod(
+        'overridePreferredUILocale',
+        {
+          'locale': locale,
+        },
+      );
 
   /// Deprecated. Configure behavior through the RevenueCat dashboard instead.
   /// Set this to true if you are passing in an appUserID but it is anonymous.
@@ -305,6 +329,27 @@ class Purchases {
     );
   }
 
+  /// Sets attribution data from Appstack's attribution params, then syncs
+  /// subscriber attributes and fetches fresh offerings so that Appstack-based
+  /// targeting is applied before this method returns.
+  ///
+  /// Pass the map received from the Appstack Attribution SDK's
+  /// `getAttributionParams()` directly. The SDK extracts relevant attribution
+  /// info and sets the appropriate subscriber attributes.
+  ///
+  /// [data] The attribution params from the Appstack Attribution SDK.
+  static Future<Offerings> setAppstackAttributionParams(
+    Map<String, dynamic> data,
+  ) async {
+    final res = await _channel.invokeMethod(
+      'setAppstackAttributionParams',
+      {'data': data},
+    );
+    return Offerings.fromJson(
+      Map<String, dynamic>.from(res),
+    );
+  }
+
   /// Fetch the product info. Returns a list of products or throws an error if
   /// the products are not properly configured in RevenueCat or if there is
   /// another error while retrieving them.
@@ -327,7 +372,6 @@ class Purchases {
     // Use deprecated PurchasesType if using something other than default
     // Otherwise use new ProductType
     String typeString;
-    // ignore: deprecated_member_use_from_same_package
     if (type != PurchaseType.subs) {
       typeString = type.name;
     } else {
@@ -365,19 +409,23 @@ class Purchases {
   /// [type] If the product is an Android INAPP, this needs to be
   /// PurchaseType.INAPP otherwise the product won't be found.
   /// PurchaseType.Subs by default. This parameter only has effect in Android.
-  @Deprecated('Use purchaseStoreProduct')
+  @Deprecated('Use purchase(PurchaseParams)')
   static Future<PurchaseResult> purchaseProduct(
     String productIdentifier, {
     UpgradeInfo? upgradeInfo,
     PurchaseType type = PurchaseType.subs,
   }) async {
-    final prorationMode = upgradeInfo?.prorationMode;
+    final storeReplacementMode =
+        _storeReplacementModeFromGoogleReplacementModeInt(
+          upgradeInfo?.prorationMode?.value,
+        )?.value;
     final purchaseResult =
       await _invokeReturningPurchaseResult('purchaseProduct', {
         'productIdentifier': productIdentifier,
         'type': type.name,
         'googleOldProductIdentifier': upgradeInfo?.oldSKU,
-        'googleProrationMode': prorationMode?.value,
+        'googleProrationMode': null,
+        'storeReplacementMode': storeReplacementMode,
         'googleIsPersonalizedPrice': null,
         'presentedOfferingIdentifier': null,
       });
@@ -402,19 +450,24 @@ class Purchases {
   /// customize for you" in the purchase dialog when true.
   /// See https://developer.android.com/google/play/billing/integrate#personalized-price
   /// for more info.
+  @Deprecated('Use purchase(PurchaseParams)')
   static Future<PurchaseResult> purchaseStoreProduct(
     StoreProduct storeProduct, {
     GoogleProductChangeInfo? googleProductChangeInfo,
     bool? googleIsPersonalizedPrice,
   }) async {
-    final prorationMode = googleProductChangeInfo?.prorationMode?.value;
+    final storeReplacementMode =
+        _storeReplacementModeFromGoogleProrationMode(
+          googleProductChangeInfo?.prorationMode,
+        )?.value;
     final purchaseResult =
       await _invokeReturningPurchaseResult('purchaseProduct', {
         'productIdentifier': storeProduct.identifier,
         'type': storeProduct.productCategory?.name,
         'googleOldProductIdentifier':
             googleProductChangeInfo?.oldProductIdentifier,
-        'googleProrationMode': prorationMode,
+        'googleProrationMode': null,
+        'storeReplacementMode': storeReplacementMode,
         'googleIsPersonalizedPrice': googleIsPersonalizedPrice,
         'presentedOfferingIdentifier':
             storeProduct.presentedOfferingContext?.offeringIdentifier,
@@ -444,14 +497,20 @@ class Purchases {
   /// customize for you" in the purchase dialog when true.
   /// See https://developer.android.com/google/play/billing/integrate#personalized-price
   /// for more info.
+  @Deprecated('Use purchase(PurchaseParams)')
   static Future<PurchaseResult> purchasePackage(
     Package packageToPurchase, {
     @Deprecated('Use GoogleProductChangeInfo') UpgradeInfo? upgradeInfo,
     GoogleProductChangeInfo? googleProductChangeInfo,
     bool? googleIsPersonalizedPrice,
   }) async {
-    final prorationMode = googleProductChangeInfo?.prorationMode?.value ??
-        upgradeInfo?.prorationMode?.value;
+    final storeReplacementMode =
+        _storeReplacementModeFromGoogleProrationMode(
+          googleProductChangeInfo?.prorationMode,
+        )?.value ??
+        _storeReplacementModeFromGoogleReplacementModeInt(
+          upgradeInfo?.prorationMode?.value,
+        )?.value;
     final purchaseResult =
       await _invokeReturningPurchaseResult('purchasePackage', {
         'packageIdentifier': packageToPurchase.identifier,
@@ -459,7 +518,8 @@ class Purchases {
             packageToPurchase.presentedOfferingContext.toJson(),
         'googleOldProductIdentifier':
             googleProductChangeInfo?.oldProductIdentifier ?? upgradeInfo?.oldSKU,
-        'googleProrationMode': prorationMode,
+        'googleProrationMode': null,
+        'storeReplacementMode': storeReplacementMode,
         'googleIsPersonalizedPrice': googleIsPersonalizedPrice,
       });
     return purchaseResult;
@@ -485,6 +545,7 @@ class Purchases {
   /// customize for you" in the purchase dialog when true.
   /// See https://developer.android.com/google/play/billing/integrate#personalized-price
   /// for more info.
+  @Deprecated('Use purchase(PurchaseParams)')
   static Future<PurchaseResult> purchaseSubscriptionOption(
     SubscriptionOption subscriptionOption, {
     GoogleProductChangeInfo? googleProductChangeInfo,
@@ -494,7 +555,10 @@ class Purchases {
       throw UnsupportedPlatformException();
     }
 
-    final prorationMode = googleProductChangeInfo?.prorationMode?.value;
+    final storeReplacementMode =
+        _storeReplacementModeFromGoogleProrationMode(
+          googleProductChangeInfo?.prorationMode,
+        )?.value;
 
     final purchaseResult =
         await _invokeReturningPurchaseResult('purchaseSubscriptionOption', {
@@ -502,7 +566,8 @@ class Purchases {
       'optionIdentifier': subscriptionOption.id,
       'googleOldProductIdentifier':
           googleProductChangeInfo?.oldProductIdentifier,
-      'googleProrationMode': prorationMode,
+      'googleProrationMode': null,
+      'storeReplacementMode': storeReplacementMode,
       'googleIsPersonalizedPrice': googleIsPersonalizedPrice,
       'presentedOfferingIdentifier':
           subscriptionOption.presentedOfferingContext?.offeringIdentifier,
@@ -522,6 +587,7 @@ class Purchases {
   ///
   /// [promotionalOffer] Promotional offer that will be applied to the product.
   /// Retrieve this offer using [getPromotionalOffer].
+  @Deprecated('Use purchase(PurchaseParams)')
   static Future<PurchaseResult> purchaseDiscountedProduct(
     StoreProduct product,
     PromotionalOffer promotionalOffer,
@@ -548,6 +614,7 @@ class Purchases {
   ///
   /// [promotionalOffer] Promotional offer that will be applied to the product.
   /// Retrieve this offer using [getPromotionalOffer].
+  @Deprecated('Use purchase(PurchaseParams)')
   static Future<PurchaseResult> purchaseDiscountedPackage(
     Package packageToPurchase,
     PromotionalOffer promotionalOffer,
@@ -560,6 +627,99 @@ class Purchases {
         'signedDiscountTimestamp': promotionalOffer.timestamp.toString(),
       });
     return purchaseResult;
+  }
+
+  static Future<PurchaseResult> purchase(
+      PurchaseParams purchaseParams,
+  ) async {
+    final package = purchaseParams.package;
+    final storeProduct = purchaseParams.product;
+    final subscriptionOption = purchaseParams.subscriptionOption;
+    final productChangeInfo = purchaseParams.productChangeInfo;
+    final googleProductChangeInfo = purchaseParams.googleProductChangeInfo;
+    final googleIsPersonalizedPrice = purchaseParams.googleIsPersonalizedPrice;
+    final oldProductIdentifier = productChangeInfo?.oldProductIdentifier ??
+        googleProductChangeInfo?.oldProductIdentifier;
+    final storeReplacementMode = productChangeInfo != null
+        ? productChangeInfo.replacementMode?.value
+        : _storeReplacementModeFromGoogleProrationMode(
+            googleProductChangeInfo?.prorationMode,
+          )?.value;
+    final signedDiscountTimestamp = purchaseParams.promotionalOffer?.timestamp.toString();
+    final winBackOffer = purchaseParams.winBackOffer;
+    final customerEmail = purchaseParams.customerEmail;
+    final presentedOfferingContext = purchaseParams.package?.presentedOfferingContext ??
+        purchaseParams.product?.presentedOfferingContext ??
+        purchaseParams.subscriptionOption?.presentedOfferingContext;
+    final presentedOfferingContextJson = presentedOfferingContext?.toJson();
+    final purchaseArgs = <String, dynamic>{
+      'googleOldProductIdentifier': oldProductIdentifier,
+      'storeReplacementMode': storeReplacementMode,
+      'googleIsPersonalizedPrice': googleIsPersonalizedPrice,
+      'signedDiscountTimestamp': signedDiscountTimestamp,
+      'presentedOfferingContext': presentedOfferingContextJson,
+      'customerEmail': customerEmail,
+      'winBackOfferIdentifier': winBackOffer?.identifier,
+    };
+    final isWinBackOfferPurchase = (defaultTargetPlatform == TargetPlatform.iOS
+        || defaultTargetPlatform == TargetPlatform.macOS)
+        && winBackOffer != null;
+    if (package != null) {
+      final methodName = isWinBackOfferPurchase
+          ? 'purchasePackageWithWinBackOffer'
+          : 'purchasePackage';
+      return await _invokeReturningPurchaseResult(methodName, {
+        ...purchaseArgs,
+        'packageIdentifier': package.identifier,
+      });
+    } else if (storeProduct != null) {
+      if (kIsWeb) {
+        throw UnsupportedPlatformException();
+      }
+      final methodName = isWinBackOfferPurchase
+          ? 'purchaseProductWithWinBackOffer'
+          : 'purchaseProduct';
+      return await _invokeReturningPurchaseResult(methodName, {
+        ...purchaseArgs,
+        'productIdentifier': storeProduct.identifier,
+        'type': storeProduct.productCategory?.name,
+      });
+    } else if (subscriptionOption != null) {
+      if (defaultTargetPlatform != TargetPlatform.android) {
+        throw UnsupportedPlatformException();
+      }
+      return await _invokeReturningPurchaseResult('purchaseSubscriptionOption', {
+        ...purchaseArgs,
+        'productIdentifier': subscriptionOption.productId,
+        'optionIdentifier': subscriptionOption.id,
+      });
+    } else {
+      throw ArgumentError('One of package, product or subscriptionOption must be set in PurchaseParams.');
+    }
+  }
+
+  static StoreReplacementMode? _storeReplacementModeFromGoogleProrationMode(
+    GoogleProrationMode? prorationMode,
+  ) => _storeReplacementModeFromGoogleReplacementModeInt(prorationMode?.value);
+
+  static StoreReplacementMode? _storeReplacementModeFromGoogleReplacementModeInt(
+    int? googleReplacementMode,
+  ) {
+    switch (googleReplacementMode) {
+      case 1:
+        return StoreReplacementMode.withTimeProration;
+      case 2:
+        return StoreReplacementMode.chargeProratedPrice;
+      case 3:
+        return StoreReplacementMode.withoutProration;
+      case 5:
+        return StoreReplacementMode.chargeFullPrice;
+      case 6:
+        return StoreReplacementMode.deferred;
+      case null:
+      default:
+        return null;
+    }
   }
 
   /// Restores a user's previous purchases and links their appUserIDs to any
@@ -855,6 +1015,12 @@ class Purchases {
     );
   }
 
+  /// Subscriber attribute associated with the PostHog User ID for the user
+  ///
+  /// [postHogUserID] Empty String or null will delete the subscriber attribute.
+  static Future<void> setPostHogUserID(String postHogUserID) =>
+      _channel.invokeMethod('setPostHogUserID', {'postHogUserID': postHogUserID});
+
   /// Subscriber attribute associated with the install media source for the user
   ///
   /// [mediaSource] Empty String or null will delete the subscriber attribute.
@@ -920,9 +1086,8 @@ class Purchases {
   ///
   /// Use this function to retrieve the [PromotionalOffer] to apply to a
   /// product. Returns a [PromotionalOffer] object which should be passed
-  /// to [purchaseDiscountedProduct] or [purchaseDiscountedPackage] to complete
-  /// the discounted purchase. A null [PromotionalOffer] means the user is not
-  /// entitled to the discount.
+  /// to [purchase] to complete the discounted purchase.
+  /// A null [PromotionalOffer] means the user is not entitled to the discount.
   ///
   /// [product] The [StoreProduct] the user intends to purchase.
   ///
@@ -982,6 +1147,7 @@ class Purchases {
   /// [winBackOffer] Win-back offer that will be applied to the product.
   /// Retrieve this offer using [getEligibleWinBackOffersForProduct]
   /// or [getEligibleWinBackOffersForPackage].
+  @Deprecated('Use purchase(PurchaseParams)')
   static Future<PurchaseResult> purchaseProductWithWinBackOffer(
     StoreProduct product,
     WinBackOffer winBackOffer,
@@ -1007,6 +1173,7 @@ class Purchases {
   ///
   /// [winBackOffer] Win-back offer that will be applied to the package.
   /// Retrieve this offer using [getEligibleWinBackOffersForPackage].
+  @Deprecated('Use purchase(PurchaseParams)')
   static Future<PurchaseResult> purchasePackageWithWinBackOffer(
     Package package,
     WinBackOffer winBackOffer,
@@ -1175,13 +1342,16 @@ class Purchases {
   /// @param [amazonUserID] Amazon's userID. This parameter will be ignored when syncing a Google purchase.
   /// @param [isoCurrencyCode] Product's currency code in ISO 4217 format.
   /// @param [price] Product's price.
+  /// @param [purchaseTime] Purchase time in milliseconds since epoch. Usage of this parameter is
+  /// highly recommended and usages without it are deprecated and will be removed in future versions.
   static Future<void> syncAmazonPurchase(
     String productID,
     String receiptID,
     String amazonUserID,
     String? isoCurrencyCode,
-    double? price,
-  ) =>
+    double? price, {
+    int? purchaseTime,
+  }) =>
       _channel.invokeMethod(
         'syncAmazonPurchase',
         {
@@ -1190,6 +1360,7 @@ class Purchases {
           'amazonUserID': amazonUserID,
           'isoCurrencyCode': isoCurrencyCode,
           'price': price,
+          'purchaseTime': purchaseTime,
         },
       );
 
@@ -1286,6 +1457,39 @@ class Purchases {
     }
     return VirtualCurrencies.fromJson(Map<String, dynamic>.from(result));
   }
+
+  ///================================================================================
+  /// Custom Paywall Tracking
+  ///================================================================================
+
+  /// **Experimental**: This API is experimental and may be changed or removed
+  /// in a future update.
+  ///
+  /// Tracks an impression of a custom paywall. Use this to record when a user
+  /// views your custom paywall so that RevenueCat can track paywall analytics.
+  ///
+  /// Call this method once per paywall display, ideally when the paywall first
+  /// becomes visible to the user, not in callbacks that may fire multiple times
+  /// for the same display.
+  ///
+  /// [params] Optional parameters for the impression. Include
+  /// [CustomPaywallImpressionParams.paywallId] to identify which paywall was
+  /// shown, and [CustomPaywallImpressionParams.offeringId] to override the
+  /// offering. If [offeringId] is not provided, the SDK will use the current
+  /// offering identifier from the cache.
+  static Future<void> trackCustomPaywallImpression({
+    CustomPaywallImpressionParams? params,
+  }) =>
+      _channel.invokeMethod(
+        'trackCustomPaywallImpression',
+        {
+          'paywallId': params?.paywallId,
+          'offeringId': params?.offeringId,
+        },
+      );
+
+  @experimental
+  static final adTracker = PurchasesAdTracker._();
 
   static Future<PurchaseResult> _invokeReturningPurchaseResult(String method,
       // ignore: require_trailing_commas
@@ -1440,3 +1644,28 @@ class PromotedPurchaseResult {
 }
 
 class UnsupportedPlatformException implements Exception {}
+
+@experimental
+class PurchasesAdTracker {
+  PurchasesAdTracker._();
+
+  @experimental
+  Future<void> trackAdDisplayed(AdDisplayedData data) =>
+      Purchases._channel.invokeMethod('trackAdDisplayed', data.toMap());
+
+  @experimental
+  Future<void> trackAdOpened(AdOpenedData data) =>
+      Purchases._channel.invokeMethod('trackAdOpened', data.toMap());
+
+  @experimental
+  Future<void> trackAdLoaded(AdLoadedData data) =>
+      Purchases._channel.invokeMethod('trackAdLoaded', data.toMap());
+
+  @experimental
+  Future<void> trackAdRevenue(AdRevenueData data) =>
+      Purchases._channel.invokeMethod('trackAdRevenue', data.toMap());
+
+  @experimental
+  Future<void> trackAdFailedToLoad(AdFailedToLoadData data) =>
+      Purchases._channel.invokeMethod('trackAdFailedToLoad', data.toMap());
+}

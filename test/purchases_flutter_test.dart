@@ -100,6 +100,9 @@ void main() {
             'shouldShowInAppMessagesAutomatically': true,
             'entitlementVerificationMode': 'DISABLED',
             'pendingTransactionsForPrepaidPlansEnabled': false,
+            'automaticDeviceIdentifierCollectionEnabled': true,
+            'diagnosticsEnabled': false,
+            'preferredUILocaleOverride': null,
           },
         ),
       ],
@@ -129,6 +132,9 @@ void main() {
             'shouldShowInAppMessagesAutomatically': true,
             'entitlementVerificationMode': 'DISABLED',
             'pendingTransactionsForPrepaidPlansEnabled': false,
+            'automaticDeviceIdentifierCollectionEnabled': true,
+            'diagnosticsEnabled': false,
+            'preferredUILocaleOverride': null,
           },
         ),
       ],
@@ -156,6 +162,9 @@ void main() {
             'shouldShowInAppMessagesAutomatically': true,
             'entitlementVerificationMode': 'DISABLED',
             'pendingTransactionsForPrepaidPlansEnabled': false,
+            'automaticDeviceIdentifierCollectionEnabled': true,
+            'diagnosticsEnabled': false,
+            'preferredUILocaleOverride': null,
           },
         ),
       ],
@@ -186,6 +195,9 @@ void main() {
             'shouldShowInAppMessagesAutomatically': true,
             'entitlementVerificationMode': 'DISABLED',
             'pendingTransactionsForPrepaidPlansEnabled': false,
+            'automaticDeviceIdentifierCollectionEnabled': true,
+            'diagnosticsEnabled': false,
+            'preferredUILocaleOverride': null,
           },
         ),
       ],
@@ -411,6 +423,13 @@ void main() {
     expect(PurchasesErrorCode.apiEndpointBlocked.index, 33);
     expect(PurchasesErrorCode.invalidPromotionalOfferError.index, 34);
     expect(PurchasesErrorCode.offlineConnectionError.index, 35);
+    expect(PurchasesErrorCode.featureNotAvailableInCustomEntitlementsComputationMode.index, 36);
+    expect(PurchasesErrorCode.signatureVerificationFailed.index, 37);
+    expect(PurchasesErrorCode.featureNotSupportedWithStoreKit1.index, 38);
+    expect(PurchasesErrorCode.invalidWebPurchaseToken.index, 39);
+    expect(PurchasesErrorCode.purchaseBelongsToOtherUser.index, 40);
+    expect(PurchasesErrorCode.expiredWebPurchaseToken.index, 41);
+    expect(PurchasesErrorCode.testStoreSimulatedPurchaseError.index, 42);
   });
 
   test('PurchasesErrorHelper maps errors correctly', () {
@@ -560,8 +579,618 @@ void main() {
     );
     expect(
       PurchasesErrorHelper.getErrorCode(PlatformException(code: '36')),
+      PurchasesErrorCode.featureNotAvailableInCustomEntitlementsComputationMode,
+    );
+    expect(
+      PurchasesErrorHelper.getErrorCode(PlatformException(code: '37')),
+      PurchasesErrorCode.signatureVerificationFailed,
+    );
+    expect(
+      PurchasesErrorHelper.getErrorCode(PlatformException(code: '38')),
+      PurchasesErrorCode.featureNotSupportedWithStoreKit1,
+    );
+    expect(
+      PurchasesErrorHelper.getErrorCode(PlatformException(code: '39')),
+      PurchasesErrorCode.invalidWebPurchaseToken,
+    );
+    expect(
+      PurchasesErrorHelper.getErrorCode(PlatformException(code: '40')),
+      PurchasesErrorCode.purchaseBelongsToOtherUser,
+    );
+    expect(
+      PurchasesErrorHelper.getErrorCode(PlatformException(code: '41')),
+      PurchasesErrorCode.expiredWebPurchaseToken,
+    );
+    expect(
+      PurchasesErrorHelper.getErrorCode(PlatformException(code: '42')),
+      PurchasesErrorCode.testStoreSimulatedPurchaseError,
+    );
+    expect(
+      PurchasesErrorHelper.getErrorCode(PlatformException(code: '43')),
       PurchasesErrorCode.unknownError,
     );
+  });
+
+  test('purchase calls successfully with package and all params', () async {
+    try {
+      response = {
+        'productIdentifier': 'product.identifier',
+        'customerInfo': mockCustomerInfoResponse,
+        'transaction': mockStoreTransaction,
+      };
+      const mockStoreProduct = StoreProduct(
+        'com.revenuecat.lifetime',
+        'description',
+        'lifetime (PurchasesSample)',
+        199.99,
+        '\$199.99',
+        'USD',
+      );
+      const mockPackage = Package(
+        '\$rc_lifetime',
+        PackageType.lifetime,
+        mockStoreProduct,
+        PresentedOfferingContext('main', null, null),
+      );
+      const promotionalOffer = PromotionalOffer(
+          'identifier',
+          'keyIdentifier',
+          'nonce',
+          'signature',
+          1234567890,
+      );
+      final purchaseParams = PurchaseParams.package(
+        mockPackage,
+        googleProductChangeInfo: GoogleProductChangeInfo(
+          'old_product_id',
+          prorationMode: GoogleProrationMode.immediateAndChargeFullPrice,
+        ),
+        googleIsPersonalizedPrice: true,
+        promotionalOffer: promotionalOffer,
+        customerEmail: 'testemail@revenuecat.com',
+      );
+      final purchasePackageResult =
+      await Purchases.purchase(purchaseParams);
+      expect(
+        purchasePackageResult,
+        PurchaseResult.fromJson(response),
+      );
+
+      expect(
+        log,
+        <Matcher>[
+          isMethodCall(
+            'purchasePackage',
+            arguments: <String, dynamic>{
+              'packageIdentifier': '\$rc_lifetime',
+              'presentedOfferingContext': <String, dynamic>{
+                'offeringIdentifier': 'main',
+                'placementIdentifier': null,
+                'targetingContext': null,
+              },
+              'googleOldProductIdentifier': 'old_product_id',
+              'storeReplacementMode': 'CHARGE_FULL_PRICE',
+              'googleIsPersonalizedPrice': true,
+              'signedDiscountTimestamp': '1234567890',
+              'winBackOfferIdentifier': null,
+              'customerEmail': 'testemail@revenuecat.com',
+            },
+          ),
+        ],
+      );
+    } on PlatformException catch (e) {
+      fail('there was an exception $e');
+    }
+  });
+
+  test('purchase with win-back offer calls successfully', () async {
+    try {
+      debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+      response = {
+        'productIdentifier': 'product.identifier',
+        'customerInfo': mockCustomerInfoResponse,
+        'transaction': mockStoreTransaction,
+      };
+      const mockStoreProduct = StoreProduct(
+        'com.revenuecat.lifetime',
+        'description',
+        'lifetime (PurchasesSample)',
+        199.99,
+        '\$199.99',
+        'USD',
+      );
+      const mockPackage = Package(
+        '\$rc_lifetime',
+        PackageType.lifetime,
+        mockStoreProduct,
+        PresentedOfferingContext('main', null, null),
+      );
+      const winBackOffer = WinBackOffer(
+        'win_back_identifier',
+        4.99,
+        'USD4.99',
+        0,
+        'P1M',
+        'month',
+        1,
+      );
+      const purchaseParams = PurchaseParams.package(
+        mockPackage,
+        winBackOffer: winBackOffer,
+      );
+      final purchasePackageResult =
+      await Purchases.purchase(purchaseParams);
+      expect(
+        purchasePackageResult,
+        PurchaseResult.fromJson(response),
+      );
+
+      expect(
+        log,
+        <Matcher>[
+          isMethodCall(
+            'purchasePackageWithWinBackOffer',
+            arguments: <String, dynamic>{
+              'packageIdentifier': '\$rc_lifetime',
+              'presentedOfferingContext': <String, dynamic>{
+                'offeringIdentifier': 'main',
+                'placementIdentifier': null,
+                'targetingContext': null,
+              },
+              'googleOldProductIdentifier': null,
+              'storeReplacementMode': null,
+              'googleIsPersonalizedPrice': null,
+              'signedDiscountTimestamp': null,
+              'winBackOfferIdentifier': 'win_back_identifier',
+              'customerEmail': null,
+            },
+          ),
+        ],
+      );
+    } on PlatformException catch (e) {
+      fail('there was an exception $e');
+    } finally {
+      debugDefaultTargetPlatformOverride = null;
+    }
+  });
+
+  test(
+      'purchase with StoreProductChangeInfo without replacementMode does not fallback to GoogleProductChangeInfo',
+      () async {
+    try {
+      response = {
+        'productIdentifier': 'product.identifier',
+        'customerInfo': mockCustomerInfoResponse,
+        'transaction': mockStoreTransaction,
+      };
+      const mockStoreProduct = StoreProduct(
+        'com.revenuecat.lifetime',
+        'description',
+        'lifetime (PurchasesSample)',
+        199.99,
+        '\$199.99',
+        'USD',
+      );
+      const mockPackage = Package(
+        '\$rc_lifetime',
+        PackageType.lifetime,
+        mockStoreProduct,
+        PresentedOfferingContext('main', null, null),
+      );
+      const storeProductChangeInfo = StoreProductChangeInfo(
+        'old_product_id',
+        replacementMode: null,
+      );
+      final googleProductChangeInfo = GoogleProductChangeInfo(
+        'google_old_product_id',
+        prorationMode: GoogleProrationMode.immediateAndChargeFullPrice,
+      );
+      final purchaseParams = PurchaseParams.package(
+        mockPackage,
+        productChangeInfo: storeProductChangeInfo,
+        googleProductChangeInfo: googleProductChangeInfo,
+      );
+      final purchasePackageResult = await Purchases.purchase(purchaseParams);
+      expect(
+        purchasePackageResult,
+        PurchaseResult.fromJson(response),
+      );
+
+      expect(
+        log,
+        <Matcher>[
+          isMethodCall(
+            'purchasePackage',
+            arguments: <String, dynamic>{
+              'packageIdentifier': '\$rc_lifetime',
+              'presentedOfferingContext': <String, dynamic>{
+                'offeringIdentifier': 'main',
+                'placementIdentifier': null,
+                'targetingContext': null,
+              },
+              'googleOldProductIdentifier': 'old_product_id',
+              'storeReplacementMode': null,
+              'googleIsPersonalizedPrice': null,
+              'signedDiscountTimestamp': null,
+              'winBackOfferIdentifier': null,
+              'customerEmail': null,
+            },
+          ),
+        ],
+      );
+    } on PlatformException catch (e) {
+      fail('there was an exception $e');
+    }
+  });
+
+  test('purchase calls successfully with package and minimum params', () async {
+    try {
+      response = {
+        'productIdentifier': 'product.identifier',
+        'customerInfo': mockCustomerInfoResponse,
+        'transaction': mockStoreTransaction,
+      };
+      const mockStoreProduct = StoreProduct(
+        'com.revenuecat.lifetime',
+        'description',
+        'lifetime (PurchasesSample)',
+        199.99,
+        '\$199.99',
+        'USD',
+      );
+      const mockPackage = Package(
+        '\$rc_lifetime',
+        PackageType.lifetime,
+        mockStoreProduct,
+        PresentedOfferingContext('main', null, null),
+      );
+      const purchaseParams = PurchaseParams.package(
+          mockPackage,
+      );
+      final purchasePackageResult =
+      await Purchases.purchase(purchaseParams);
+      expect(
+        purchasePackageResult,
+        PurchaseResult.fromJson(response),
+      );
+
+      expect(
+        log,
+        <Matcher>[
+          isMethodCall(
+            'purchasePackage',
+            arguments: <String, dynamic>{
+              'packageIdentifier': '\$rc_lifetime',
+              'presentedOfferingContext': <String, dynamic>{
+                'offeringIdentifier': 'main',
+                'placementIdentifier': null,
+                'targetingContext': null,
+              },
+              'googleOldProductIdentifier': null,
+              'storeReplacementMode': null,
+              'googleIsPersonalizedPrice': null,
+              'signedDiscountTimestamp': null,
+              'winBackOfferIdentifier': null,
+              'customerEmail': null,
+            },
+          ),
+        ],
+      );
+    } on PlatformException catch (e) {
+      fail('there was an exception $e');
+    }
+  });
+
+  test('purchase calls successfully with store product and all params', () async {
+    try {
+      response = {
+        'productIdentifier': 'product.identifier',
+        'customerInfo': mockCustomerInfoResponse,
+        'transaction': mockStoreTransaction,
+      };
+      const presentedOfferingContext = PresentedOfferingContext('main', null, null);
+      const mockStoreProduct = StoreProduct(
+        'com.revenuecat.lifetime',
+        'description',
+        'lifetime (PurchasesSample)',
+        199.99,
+        '\$199.99',
+        'USD',
+        productCategory: ProductCategory.nonSubscription,
+        presentedOfferingContext: presentedOfferingContext,
+      );
+      const promotionalOffer = PromotionalOffer(
+        'identifier',
+        'keyIdentifier',
+        'nonce',
+        'signature',
+        1234567890,
+      );
+      final purchaseParams = PurchaseParams.storeProduct(
+          mockStoreProduct,
+          googleProductChangeInfo: GoogleProductChangeInfo(
+            'old_product_id',
+            prorationMode: GoogleProrationMode.immediateAndChargeFullPrice,
+          ),
+          googleIsPersonalizedPrice: true,
+          promotionalOffer: promotionalOffer,
+          customerEmail: 'testemail@revenuecat.com',
+      );
+      final purchaseProductResult =
+      await Purchases.purchase(purchaseParams);
+      expect(
+        purchaseProductResult,
+        PurchaseResult.fromJson(response),
+      );
+
+      expect(
+        log,
+        <Matcher>[
+          isMethodCall(
+            'purchaseProduct',
+            arguments: <String, dynamic>{
+              'productIdentifier': 'com.revenuecat.lifetime',
+              'type': 'nonSubscription',
+              'presentedOfferingContext': <String, dynamic>{
+                'offeringIdentifier': 'main',
+                'placementIdentifier': null,
+                'targetingContext': null,
+              },
+              'googleOldProductIdentifier': 'old_product_id',
+              'storeReplacementMode': 'CHARGE_FULL_PRICE',
+              'googleIsPersonalizedPrice': true,
+              'signedDiscountTimestamp': '1234567890',
+              'winBackOfferIdentifier': null,
+              'customerEmail': 'testemail@revenuecat.com'
+            },
+          ),
+        ],
+      );
+    } on PlatformException catch (e) {
+      fail('there was an exception $e');
+    }
+  });
+
+  test('purchase calls successfully with store product and win back offer', () async {
+    try {
+      debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+      response = {
+        'productIdentifier': 'product.identifier',
+        'customerInfo': mockCustomerInfoResponse,
+        'transaction': mockStoreTransaction,
+      };
+      const presentedOfferingContext = PresentedOfferingContext('main', null, null);
+      const mockStoreProduct = StoreProduct(
+        'com.revenuecat.lifetime',
+        'description',
+        'lifetime (PurchasesSample)',
+        199.99,
+        '\$199.99',
+        'USD',
+        productCategory: ProductCategory.nonSubscription,
+        presentedOfferingContext: presentedOfferingContext,
+      );
+      const winBackOffer = WinBackOffer(
+        'win_back_identifier',
+        4.99,
+        'USD4.99',
+        0,
+        'P1M',
+        'month',
+        1,
+      );
+      const purchaseParams = PurchaseParams.storeProduct(
+        mockStoreProduct,
+        winBackOffer: winBackOffer,
+      );
+      final purchaseProductResult =
+      await Purchases.purchase(purchaseParams);
+      expect(
+        purchaseProductResult,
+        PurchaseResult.fromJson(response),
+      );
+
+      expect(
+        log,
+        <Matcher>[
+          isMethodCall(
+            'purchaseProductWithWinBackOffer',
+            arguments: <String, dynamic>{
+              'productIdentifier': 'com.revenuecat.lifetime',
+              'type': 'nonSubscription',
+              'presentedOfferingContext': <String, dynamic>{
+                'offeringIdentifier': 'main',
+                'placementIdentifier': null,
+                'targetingContext': null,
+              },
+              'googleOldProductIdentifier': null,
+              'storeReplacementMode': null,
+              'googleIsPersonalizedPrice': null,
+              'signedDiscountTimestamp': null,
+              'winBackOfferIdentifier': 'win_back_identifier',
+              'customerEmail': null,
+            },
+          ),
+        ],
+      );
+    } on PlatformException catch (e) {
+      fail('there was an exception $e');
+    } finally {
+      debugDefaultTargetPlatformOverride = null;
+    }
+  });
+
+  test('purchase calls successfully with store product and minimum params', () async {
+    try {
+      response = {
+        'productIdentifier': 'product.identifier',
+        'customerInfo': mockCustomerInfoResponse,
+        'transaction': mockStoreTransaction,
+      };
+      const mockStoreProduct = StoreProduct(
+        'com.revenuecat.lifetime',
+        'description',
+        'lifetime (PurchasesSample)',
+        199.99,
+        '\$199.99',
+        'USD',
+        productCategory: ProductCategory.nonSubscription,
+      );
+      const purchaseParams = PurchaseParams.storeProduct(
+          mockStoreProduct,
+      );
+      final purchaseProductResult =
+      await Purchases.purchase(purchaseParams);
+      expect(
+        purchaseProductResult,
+        PurchaseResult.fromJson(response),
+      );
+
+      expect(
+        log,
+        <Matcher>[
+          isMethodCall(
+            'purchaseProduct',
+            arguments: <String, dynamic>{
+              'productIdentifier': 'com.revenuecat.lifetime',
+              'type': 'nonSubscription',
+              'presentedOfferingContext': null,
+              'googleOldProductIdentifier': null,
+              'storeReplacementMode': null,
+              'googleIsPersonalizedPrice': null,
+              'signedDiscountTimestamp': null,
+              'winBackOfferIdentifier': null,
+              'customerEmail': null,
+            },
+          ),
+        ],
+      );
+    } on PlatformException catch (e) {
+      fail('there was an exception $e');
+    }
+  });
+
+  test('purchase calls successfully with subscription option and all params', () async {
+    try {
+      response = {
+        'productIdentifier': 'product.identifier',
+        'customerInfo': mockCustomerInfoResponse,
+        'transaction': mockStoreTransaction,
+      };
+      const presentedOfferingContext = PresentedOfferingContext('main', null, null);
+      const mockSubscriptionOption = SubscriptionOption(
+        'subscription_option_id',
+        'com.revenuecat.monthly',
+        'com.revenuecat.monthly',
+        [],
+        [],
+        false,
+        Period(PeriodUnit.month, 1, 'P1M'),
+        false,
+        null,
+        null,
+        null,
+        presentedOfferingContext,
+        null,
+      );
+      final purchaseParams = PurchaseParams.subscriptionOption(
+          mockSubscriptionOption,
+          googleProductChangeInfo: GoogleProductChangeInfo(
+            'old_product_id',
+            prorationMode: GoogleProrationMode.immediateAndChargeFullPrice,
+          ),
+          googleIsPersonalizedPrice: true,
+          customerEmail: 'testemail@revenuecat.com',
+      );
+      final purchaseSubscriptionOptionResult =
+      await Purchases.purchase(purchaseParams);
+      expect(
+        purchaseSubscriptionOptionResult,
+        PurchaseResult.fromJson(response),
+      );
+
+      expect(
+        log,
+        <Matcher>[
+          isMethodCall(
+            'purchaseSubscriptionOption',
+            arguments: <String, dynamic>{
+              'productIdentifier': 'com.revenuecat.monthly',
+              'optionIdentifier': 'subscription_option_id',
+              'presentedOfferingContext': <String, dynamic>{
+                'offeringIdentifier': 'main',
+                'placementIdentifier': null,
+                'targetingContext': null,
+              },
+              'googleOldProductIdentifier': 'old_product_id',
+              'storeReplacementMode': 'CHARGE_FULL_PRICE',
+              'googleIsPersonalizedPrice': true,
+              'signedDiscountTimestamp': null,
+              'winBackOfferIdentifier': null,
+              'customerEmail': 'testemail@revenuecat.com',
+            },
+          ),
+        ],
+      );
+    } on PlatformException catch (e) {
+      fail('there was an exception $e');
+    }
+  });
+
+  test('purchase calls successfully with subscription option and minimum params', () async {
+    try {
+      response = {
+        'productIdentifier': 'product.identifier',
+        'customerInfo': mockCustomerInfoResponse,
+        'transaction': mockStoreTransaction,
+      };
+      const mockSubscriptionOption = SubscriptionOption(
+        'subscription_option_id',
+        'com.revenuecat.monthly',
+        'com.revenuecat.monthly',
+        [],
+        [],
+        false,
+        Period(PeriodUnit.month, 1, 'P1M'),
+        false,
+        null,
+        null,
+        null,
+        null,
+        null,
+      );
+      const purchaseParams = PurchaseParams.subscriptionOption(
+          mockSubscriptionOption,
+      );
+      final purchaseSubscriptionOptionResult =
+      await Purchases.purchase(purchaseParams);
+      expect(
+        purchaseSubscriptionOptionResult,
+        PurchaseResult.fromJson(response),
+      );
+
+      expect(
+        log,
+        <Matcher>[
+          isMethodCall(
+            'purchaseSubscriptionOption',
+            arguments: <String, dynamic>{
+              'productIdentifier': 'com.revenuecat.monthly',
+              'optionIdentifier': 'subscription_option_id',
+              'presentedOfferingContext': null,
+              'googleOldProductIdentifier': null,
+              'storeReplacementMode': null,
+              'googleIsPersonalizedPrice': null,
+              'signedDiscountTimestamp': null,
+              'winBackOfferIdentifier': null,
+              'customerEmail': null,
+            },
+          ),
+        ],
+      );
+    } on PlatformException catch (e) {
+      fail('there was an exception $e');
+    }
   });
 
   test('purchasePackage calls successfully', () async {
@@ -606,6 +1235,7 @@ void main() {
               },
               'googleOldProductIdentifier': null,
               'googleProrationMode': null,
+              'storeReplacementMode': null,
               'googleIsPersonalizedPrice': null,
             },
           ),
@@ -666,7 +1296,8 @@ void main() {
                 'targetingContext': null,
               },
               'googleOldProductIdentifier': 'com.revenuecat.weekly',
-              'googleProrationMode': 1,
+              'googleProrationMode': null,
+              'storeReplacementMode': 'WITH_TIME_PRORATION',
               'googleIsPersonalizedPrice': true,
             },
           ),
@@ -751,6 +1382,7 @@ void main() {
               'type': 'subs',
               'googleOldProductIdentifier': null,
               'googleProrationMode': null,
+              'storeReplacementMode': null,
               'googleIsPersonalizedPrice': null,
               'presentedOfferingIdentifier': null,
             },
@@ -798,6 +1430,7 @@ void main() {
               'type': 'inapp',
               'googleOldProductIdentifier': null,
               'googleProrationMode': null,
+              'storeReplacementMode': null,
               'googleIsPersonalizedPrice': null,
               'presentedOfferingIdentifier': null,
             },
@@ -844,6 +1477,7 @@ void main() {
               'type': 'subscription',
               'googleOldProductIdentifier': null,
               'googleProrationMode': null,
+              'storeReplacementMode': null,
               'googleIsPersonalizedPrice': null,
               'presentedOfferingIdentifier': 'my-offer',
             },
@@ -954,6 +1588,7 @@ void main() {
               'optionIdentifier': 'monthly',
               'googleOldProductIdentifier': null,
               'googleProrationMode': null,
+              'storeReplacementMode': null,
               'googleIsPersonalizedPrice': null,
               'presentedOfferingIdentifier': 'my-offer',
             },
@@ -1021,7 +1656,8 @@ void main() {
               'productIdentifier': 'gold',
               'optionIdentifier': 'monthly',
               'googleOldProductIdentifier': 'silver',
-              'googleProrationMode': 3,
+              'googleProrationMode': null,
+              'storeReplacementMode': 'WITHOUT_PRORATION',
               'googleIsPersonalizedPrice': true,
               'presentedOfferingIdentifier': 'my-offer',
             },
@@ -1094,6 +1730,9 @@ void main() {
             'shouldShowInAppMessagesAutomatically': true,
             'entitlementVerificationMode': 'DISABLED',
             'pendingTransactionsForPrepaidPlansEnabled': false,
+            'automaticDeviceIdentifierCollectionEnabled': true,
+            'diagnosticsEnabled': false,
+            'preferredUILocaleOverride': null,
           },
         ),
       ],
@@ -1122,6 +1761,9 @@ void main() {
             'shouldShowInAppMessagesAutomatically': true,
             'entitlementVerificationMode': 'DISABLED',
             'pendingTransactionsForPrepaidPlansEnabled': true,
+            'automaticDeviceIdentifierCollectionEnabled': true,
+            'diagnosticsEnabled': false,
+            'preferredUILocaleOverride': null,
           },
         ),
       ],
@@ -1151,6 +1793,9 @@ void main() {
             'shouldShowInAppMessagesAutomatically': true,
             'entitlementVerificationMode': 'DISABLED',
             'pendingTransactionsForPrepaidPlansEnabled': false,
+            'automaticDeviceIdentifierCollectionEnabled': true,
+            'diagnosticsEnabled': false,
+            'preferredUILocaleOverride': null,
           },
         ),
       ],
@@ -1181,6 +1826,129 @@ void main() {
             'shouldShowInAppMessagesAutomatically': true,
             'entitlementVerificationMode': 'DISABLED',
             'pendingTransactionsForPrepaidPlansEnabled': false,
+            'automaticDeviceIdentifierCollectionEnabled': true,
+            'diagnosticsEnabled': false,
+            'preferredUILocaleOverride': null,
+          },
+        ),
+      ],
+    );
+  });
+
+  test('configure with automaticDeviceIdentifierCollectionEnabled false', () async {
+    await Purchases.configure(
+      PurchasesConfiguration('api_key')
+        ..appUserID = 'cesar'
+        ..automaticDeviceIdentifierCollectionEnabled = false,
+    );
+    expect(
+      log,
+      <Matcher>[
+        isMethodCall(
+          'setupPurchases',
+          arguments: <String, dynamic>{
+            'apiKey': 'api_key',
+            'appUserId': 'cesar',
+            'purchasesAreCompletedBy': 'REVENUECAT',
+            'userDefaultsSuiteName': null,
+            'storeKitVersion': 'DEFAULT',
+            'useAmazon': false,
+            'shouldShowInAppMessagesAutomatically': true,
+            'entitlementVerificationMode': 'DISABLED',
+            'pendingTransactionsForPrepaidPlansEnabled': false,
+            'automaticDeviceIdentifierCollectionEnabled': false,
+            'diagnosticsEnabled': false,
+            'preferredUILocaleOverride': null,
+          },
+        ),
+      ],
+    );
+  });
+
+  test('configure with preferredUILocaleOverride', () async {
+    await Purchases.configure(
+      PurchasesConfiguration('api_key')
+        ..appUserID = 'cesar'
+        ..preferredUILocaleOverride = 'de_DE',
+    );
+    expect(
+      log,
+      <Matcher>[
+        isMethodCall(
+          'setupPurchases',
+          arguments: <String, dynamic>{
+            'apiKey': 'api_key',
+            'appUserId': 'cesar',
+            'purchasesAreCompletedBy': 'REVENUECAT',
+            'userDefaultsSuiteName': null,
+            'storeKitVersion': 'DEFAULT',
+            'useAmazon': false,
+            'shouldShowInAppMessagesAutomatically': true,
+            'entitlementVerificationMode': 'DISABLED',
+            'pendingTransactionsForPrepaidPlansEnabled': false,
+            'automaticDeviceIdentifierCollectionEnabled': true,
+            'diagnosticsEnabled': false,
+            'preferredUILocaleOverride': 'de_DE',
+          },
+        ),
+      ],
+    );
+  });
+
+  test('configure with diagnosticsEnabled', () async {
+    await Purchases.configure(
+      PurchasesConfiguration('api_key')
+        ..appUserID = 'cesar'
+        ..diagnosticsEnabled = true,
+    );
+    expect(
+      log,
+      <Matcher>[
+        isMethodCall(
+          'setupPurchases',
+          arguments: <String, dynamic>{
+            'apiKey': 'api_key',
+            'appUserId': 'cesar',
+            'purchasesAreCompletedBy': 'REVENUECAT',
+            'userDefaultsSuiteName': null,
+            'storeKitVersion': 'DEFAULT',
+            'useAmazon': false,
+            'shouldShowInAppMessagesAutomatically': true,
+            'entitlementVerificationMode': 'DISABLED',
+            'pendingTransactionsForPrepaidPlansEnabled': false,
+            'automaticDeviceIdentifierCollectionEnabled': true,
+            'diagnosticsEnabled': true,
+            'preferredUILocaleOverride': null,
+          },
+        ),
+      ],
+    );
+  });
+
+  test('overridePreferredUILocale', () async {
+    await Purchases.overridePreferredUILocale('es-ES');
+    expect(
+      log,
+      <Matcher>[
+        isMethodCall(
+          'overridePreferredUILocale',
+          arguments: <String, dynamic>{
+            'locale': 'es-ES',
+          },
+        ),
+      ],
+    );
+  });
+
+  test('overridePreferredUILocale with null reverts to system default', () async {
+    await Purchases.overridePreferredUILocale(null);
+    expect(
+      log,
+      <Matcher>[
+        isMethodCall(
+          'overridePreferredUILocale',
+          arguments: <String, dynamic>{
+            'locale': null,
           },
         ),
       ],
@@ -1358,6 +2126,31 @@ void main() {
           'amazonUserID': 'amazonUserID_test',
           'isoCurrencyCode': 'isoCurrencyCode_test',
           'price': 3.4,
+          'purchaseTime': null,
+        },
+      ),
+    ]);
+  });
+
+  test('syncAmazonPurchase calls channel correctly with purchase time', () async {
+    await Purchases.syncAmazonPurchase(
+      'productID_test',
+      'receiptID_test',
+      'amazonUserID_test',
+      'isoCurrencyCode_test',
+      3.4,
+      purchaseTime: 1234,
+    );
+    expect(log, <Matcher>[
+      isMethodCall(
+        'syncAmazonPurchase',
+        arguments: {
+          'productID': 'productID_test',
+          'receiptID': 'receiptID_test',
+          'amazonUserID': 'amazonUserID_test',
+          'isoCurrencyCode': 'isoCurrencyCode_test',
+          'price': 3.4,
+          'purchaseTime': 1234,
         },
       ),
     ]);
@@ -1382,6 +2175,7 @@ void main() {
           'amazonUserID': 'amazonUserID_test',
           'isoCurrencyCode': null,
           'price': null,
+          'purchaseTime': null,
         },
       ),
     ]);
@@ -1404,6 +2198,7 @@ void main() {
           'amazonUserID': 'amazonUserID_test',
           'isoCurrencyCode': 'isoCurrencyCode_test',
           'price': 3.4,
+          'purchaseTime': null,
         },
       ),
     ]);
@@ -1428,6 +2223,7 @@ void main() {
           'amazonUserID': 'amazonUserID_test',
           'isoCurrencyCode': null,
           'price': null,
+          'purchaseTime': null,
         },
       ),
     ]);
@@ -1589,5 +2385,224 @@ void main() {
     ]);
 
     expect(virtualCurrencies, isNull);
+  });
+
+  test('trackCustomPaywallImpression works correctly with params', () async {
+    await Purchases.trackCustomPaywallImpression(
+      params: CustomPaywallImpressionParams(paywallId: 'my-paywall'),
+    );
+    expect(log, <Matcher>[
+      isMethodCall(
+        'trackCustomPaywallImpression',
+        arguments: {
+          'paywallId': 'my-paywall',
+          'offeringId': null,
+        },
+      ),
+    ]);
+  });
+
+  test('trackCustomPaywallImpression works correctly without params',
+      () async {
+    await Purchases.trackCustomPaywallImpression();
+    expect(log, <Matcher>[
+      isMethodCall(
+        'trackCustomPaywallImpression',
+        arguments: {
+          'paywallId': null,
+          'offeringId': null,
+        },
+      ),
+    ]);
+  });
+
+  test('trackCustomPaywallImpression works correctly with null paywallId',
+      () async {
+    await Purchases.trackCustomPaywallImpression(
+      params: CustomPaywallImpressionParams(),
+    );
+    expect(log, <Matcher>[
+      isMethodCall(
+        'trackCustomPaywallImpression',
+        arguments: {
+          'paywallId': null,
+          'offeringId': null,
+        },
+      ),
+    ]);
+  });
+
+  test('trackCustomPaywallImpression works correctly with offeringId only',
+      () async {
+    await Purchases.trackCustomPaywallImpression(
+      params: CustomPaywallImpressionParams(offeringId: 'my-offering'),
+    );
+    expect(log, <Matcher>[
+      isMethodCall(
+        'trackCustomPaywallImpression',
+        arguments: {
+          'paywallId': null,
+          'offeringId': 'my-offering',
+        },
+      ),
+    ]);
+  });
+
+  test('trackCustomPaywallImpression works correctly with both params',
+      () async {
+    await Purchases.trackCustomPaywallImpression(
+      params: CustomPaywallImpressionParams(
+        paywallId: 'my-paywall',
+        offeringId: 'my-offering',
+      ),
+    );
+    expect(log, <Matcher>[
+      isMethodCall(
+        'trackCustomPaywallImpression',
+        arguments: {
+          'paywallId': 'my-paywall',
+          'offeringId': 'my-offering',
+        },
+      ),
+    ]);
+  });
+
+  test('trackAdDisplayed sends correct method and arguments', () async {
+    await Purchases.adTracker.trackAdDisplayed(AdDisplayedData(
+      mediatorName: AdMediatorName.adMob,
+      adFormat: AdFormat.interstitial,
+      adUnitId: 'unit-1',
+      impressionId: 'imp-1',
+    ));
+    expect(log, <Matcher>[
+      isMethodCall('trackAdDisplayed', arguments: {
+        'networkName': null,
+        'mediatorName': 'AdMob',
+        'adFormat': 'interstitial',
+        'placement': null,
+        'adUnitId': 'unit-1',
+        'impressionId': 'imp-1',
+      }),
+    ]);
+  });
+
+  test('trackAdDisplayed includes optional fields when set', () async {
+    await Purchases.adTracker.trackAdDisplayed(AdDisplayedData(
+      networkName: 'SomeNetwork',
+      mediatorName: AdMediatorName.adMob,
+      adFormat: AdFormat.banner,
+      placement: 'home',
+      adUnitId: 'unit-2',
+      impressionId: 'imp-2',
+    ));
+    expect(log, <Matcher>[
+      isMethodCall('trackAdDisplayed', arguments: {
+        'networkName': 'SomeNetwork',
+        'mediatorName': 'AdMob',
+        'adFormat': 'banner',
+        'placement': 'home',
+        'adUnitId': 'unit-2',
+        'impressionId': 'imp-2',
+      }),
+    ]);
+  });
+
+  test('trackAdOpened sends correct method and arguments', () async {
+    await Purchases.adTracker.trackAdOpened(AdOpenedData(
+      mediatorName: AdMediatorName.appLovin,
+      adFormat: AdFormat.rewarded,
+      adUnitId: 'unit-3',
+      impressionId: 'imp-3',
+    ));
+    expect(log, <Matcher>[
+      isMethodCall('trackAdOpened', arguments: {
+        'networkName': null,
+        'mediatorName': 'AppLovin',
+        'adFormat': 'rewarded',
+        'placement': null,
+        'adUnitId': 'unit-3',
+        'impressionId': 'imp-3',
+      }),
+    ]);
+  });
+
+  test('trackAdLoaded sends correct method and arguments', () async {
+    await Purchases.adTracker.trackAdLoaded(AdLoadedData(
+      mediatorName: AdMediatorName.adMob,
+      adFormat: AdFormat.nativeAd,
+      adUnitId: 'unit-4',
+      impressionId: 'imp-4',
+    ));
+    expect(log, <Matcher>[
+      isMethodCall('trackAdLoaded', arguments: {
+        'networkName': null,
+        'mediatorName': 'AdMob',
+        'adFormat': 'native',
+        'placement': null,
+        'adUnitId': 'unit-4',
+        'impressionId': 'imp-4',
+      }),
+    ]);
+  });
+
+  test('trackAdRevenue sends correct method and arguments', () async {
+    await Purchases.adTracker.trackAdRevenue(AdRevenueData(
+      mediatorName: AdMediatorName.adMob,
+      adFormat: AdFormat.interstitial,
+      adUnitId: 'unit-5',
+      impressionId: 'imp-5',
+      revenueMicros: 1000000,
+      currency: 'USD',
+      precision: AdRevenuePrecision.exact,
+    ));
+    expect(log, <Matcher>[
+      isMethodCall('trackAdRevenue', arguments: {
+        'networkName': null,
+        'mediatorName': 'AdMob',
+        'adFormat': 'interstitial',
+        'placement': null,
+        'adUnitId': 'unit-5',
+        'impressionId': 'imp-5',
+        'revenueMicros': 1000000,
+        'currency': 'USD',
+        'precision': 'exact',
+      }),
+    ]);
+  });
+
+  test('trackAdFailedToLoad sends correct method and arguments', () async {
+    await Purchases.adTracker.trackAdFailedToLoad(AdFailedToLoadData(
+      mediatorName: AdMediatorName.adMob,
+      adFormat: AdFormat.banner,
+      adUnitId: 'unit-6',
+    ));
+    expect(log, <Matcher>[
+      isMethodCall('trackAdFailedToLoad', arguments: {
+        'mediatorName': 'AdMob',
+        'adFormat': 'banner',
+        'placement': null,
+        'adUnitId': 'unit-6',
+        'mediatorErrorCode': null,
+      }),
+    ]);
+  });
+
+  test('trackAdFailedToLoad includes optional fields when set', () async {
+    await Purchases.adTracker.trackAdFailedToLoad(AdFailedToLoadData(
+      mediatorName: AdMediatorName.adMob,
+      adFormat: AdFormat.banner,
+      placement: 'footer',
+      adUnitId: 'unit-6',
+      mediatorErrorCode: 42,
+    ));
+    expect(log, <Matcher>[
+      isMethodCall('trackAdFailedToLoad', arguments: {
+        'mediatorName': 'AdMob',
+        'adFormat': 'banner',
+        'placement': 'footer',
+        'adUnitId': 'unit-6',
+        'mediatorErrorCode': 42,
+      }),
+    ]);
   });
 }

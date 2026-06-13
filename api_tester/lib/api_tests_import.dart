@@ -4,6 +4,7 @@
 // included somewhere
 // ignore_for_file: unused_import
 import 'package:api_tester/api_tests/errors_api_test.dart';
+import 'package:api_tester/api_tests/models/ad_tracking_api_test.dart';
 import 'package:api_tester/api_tests/models/customer_info_wrapper_api_test.dart';
 import 'package:api_tester/api_tests/models/entitlement_info_wrapper_api_test.dart';
 import 'package:api_tester/api_tests/models/entitlement_infos_wrapper_api_test.dart';
@@ -16,10 +17,12 @@ import 'package:api_tester/api_tests/models/period_wrapper_api_test.dart';
 import 'package:api_tester/api_tests/models/price_wrapper_api_test.dart';
 import 'package:api_tester/api_tests/models/pricing_phase_wrapper_api_test.dart';
 import 'package:api_tester/api_tests/models/promotional_offer_api_test.dart';
+import 'package:api_tester/api_tests/models/purchase_params_api_test.dart';
 import 'package:api_tester/api_tests/models/purchase_configuration_api_test.dart';
 import 'package:api_tester/api_tests/models/purchase_result_api_test.dart';
 import 'package:api_tester/api_tests/models/purchases_error_api_test.dart';
 import 'package:api_tester/api_tests/models/store_api_test.dart';
+import 'package:api_tester/api_tests/models/store_product_change_api_test.dart';
 import 'package:api_tester/api_tests/models/store_product_discount_api_test.dart';
 import 'package:api_tester/api_tests/models/store_product_wrapper_api_test.dart';
 import 'package:api_tester/api_tests/models/store_transaction_api_test.dart';

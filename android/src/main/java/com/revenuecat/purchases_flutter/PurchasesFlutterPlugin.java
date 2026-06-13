@@ -27,6 +27,7 @@ import com.revenuecat.purchases.models.InAppMessageType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -62,7 +63,7 @@ public class PurchasesFlutterPlugin implements FlutterPlugin, MethodCallHandler,
     private final Handler handler = new Handler(Looper.getMainLooper());
 
     private static final String PLATFORM_NAME = "flutter";
-    private static final String PLUGIN_VERSION = "9.1.0";
+    private static final String PLUGIN_VERSION = "10.2.3";
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {
@@ -120,9 +121,15 @@ public class PurchasesFlutterPlugin implements FlutterPlugin, MethodCallHandler,
                 String verificationMode = call.argument("entitlementVerificationMode");
                 Boolean pendingTransactionsForPrepaidPlansEnabled = call
                         .argument("pendingTransactionsForPrepaidPlansEnabled");
+                Boolean automaticDeviceIdentifierCollectionEnabled = call
+                        .argument("automaticDeviceIdentifierCollectionEnabled");
+                Boolean diagnosticsEnabled = call.argument("diagnosticsEnabled");
+                String preferredUILocaleOverride = call.argument("preferredUILocaleOverride");
                 setupPurchases(apiKey, appUserId, purchasesAreCompletedBy, useAmazon,
                         shouldShowInAppMessagesAutomatically, verificationMode,
-                        pendingTransactionsForPrepaidPlansEnabled, result);
+                        pendingTransactionsForPrepaidPlansEnabled,
+                        automaticDeviceIdentifierCollectionEnabled, diagnosticsEnabled,
+                        preferredUILocaleOverride, result);
                 break;
             case "setAllowSharingStoreAccount":
                 Boolean allowSharing = call.argument("allowSharing");
@@ -138,6 +145,10 @@ public class PurchasesFlutterPlugin implements FlutterPlugin, MethodCallHandler,
             case "syncAttributesAndOfferingsIfNeeded":
                 syncAttributesAndOfferingsIfNeeded(result);
                 break;
+            case "setAppstackAttributionParams":
+                Map<String, Object> appstackData = call.argument("data");
+                setAppstackAttributionParams(appstackData, result);
+                break;
             case "getProductInfo":
                 ArrayList<String> productIdentifiers = call.argument("productIdentifiers");
                 String type = call.argument("type");
@@ -146,31 +157,31 @@ public class PurchasesFlutterPlugin implements FlutterPlugin, MethodCallHandler,
             case "purchaseProduct":
                 String productIdentifier = call.argument("productIdentifier");
                 String googleOldProductIdentifer = call.argument("googleOldProductIdentifier");
-                Integer googleProrationMode = call.argument("googleProrationMode");
+                String storeReplacementMode = call.argument("storeReplacementMode");
                 Boolean googleIsPersonalizedPrice = call.argument("googleIsPersonalizedPrice");
                 type = call.argument("type");
                 Map<String, Object> presentedOfferingContext = call.argument("presentedOfferingContext");
-                purchaseProduct(productIdentifier, type, googleOldProductIdentifer, googleProrationMode,
+                purchaseProduct(productIdentifier, type, googleOldProductIdentifer, storeReplacementMode,
                         googleIsPersonalizedPrice, presentedOfferingContext, result);
                 break;
             case "purchasePackage":
                 String packageIdentifier = call.argument("packageIdentifier");
                 presentedOfferingContext = call.argument("presentedOfferingContext");
                 googleOldProductIdentifer = call.argument("googleOldProductIdentifier");
-                googleProrationMode = call.argument("googleProrationMode");
+                storeReplacementMode = call.argument("storeReplacementMode");
                 googleIsPersonalizedPrice = call.argument("googleIsPersonalizedPrice");
                 purchasePackage(packageIdentifier, presentedOfferingContext, googleOldProductIdentifer,
-                        googleProrationMode, googleIsPersonalizedPrice, result);
+                        storeReplacementMode, googleIsPersonalizedPrice, result);
                 break;
             case "purchaseSubscriptionOption":
                 productIdentifier = call.argument("productIdentifier");
                 String optionIdentifier = call.argument("optionIdentifier");
                 googleOldProductIdentifer = call.argument("googleOldProductIdentifier");
-                googleProrationMode = call.argument("googleProrationMode");
+                storeReplacementMode = call.argument("storeReplacementMode");
                 googleIsPersonalizedPrice = call.argument("googleIsPersonalizedPrice");
                 presentedOfferingContext = call.argument("presentedOfferingContext");
                 purchaseSubscriptionOption(productIdentifier, optionIdentifier, googleOldProductIdentifer,
-                        googleProrationMode, googleIsPersonalizedPrice, presentedOfferingContext, result);
+                        storeReplacementMode, googleIsPersonalizedPrice, presentedOfferingContext, result);
                 break;
             case "getAppUserID":
                 getAppUserID(result);
@@ -199,6 +210,10 @@ public class PurchasesFlutterPlugin implements FlutterPlugin, MethodCallHandler,
             case "setProxyURLString":
                 String proxyURLString = call.argument("proxyURLString");
                 setProxyURLString(proxyURLString, result);
+                break;
+            case "overridePreferredUILocale":
+                String locale = call.argument("locale");
+                overridePreferredUILocale(locale, result);
                 break;
             case "getCustomerInfo":
                 getCustomerInfo(result);
@@ -293,6 +308,10 @@ public class PurchasesFlutterPlugin implements FlutterPlugin, MethodCallHandler,
                 String airshipChannelID = call.argument("airshipChannelID");
                 setAirshipChannelID(airshipChannelID, result);
                 break;
+            case "setPostHogUserID":
+                String postHogUserID = call.argument("postHogUserID");
+                setPostHogUserID(postHogUserID, result);
+                break;
             case "setMediaSource":
                 String mediaSource = call.argument("mediaSource");
                 setMediaSource(mediaSource, result);
@@ -340,8 +359,13 @@ public class PurchasesFlutterPlugin implements FlutterPlugin, MethodCallHandler,
                 String amazonUserID = call.argument("amazonUserID");
                 String isoCurrencyCode = call.argument("isoCurrencyCode");
                 Double price = call.argument("price");
+                Integer purchaseTime = call.argument("purchaseTime");
+                Long purchaseTimeLong = null;
+                if (purchaseTime != null) {
+                    purchaseTimeLong = purchaseTime.longValue();
+                }
                 syncAmazonPurchase(productID, receiptID, amazonUserID, isoCurrencyCode,
-                        price, result);
+                        price, purchaseTimeLong, result);
                 break;
             case "isWebPurchaseRedemptionURL":
                 String urlString = call.argument("urlString");
@@ -360,6 +384,24 @@ public class PurchasesFlutterPlugin implements FlutterPlugin, MethodCallHandler,
             case "getCachedVirtualCurrencies":
                 getCachedVirtualCurrencies(result);
                 break;
+            case "trackCustomPaywallImpression":
+                trackCustomPaywallImpression(call.arguments(), result);
+                break;
+            case "trackAdDisplayed":
+                trackAdDisplayed(call.arguments(), result);
+                break;
+            case "trackAdOpened":
+                trackAdOpened(call.arguments(), result);
+                break;
+            case "trackAdLoaded":
+                trackAdLoaded(call.arguments(), result);
+                break;
+            case "trackAdRevenue":
+                trackAdRevenue(call.arguments(), result);
+                break;
+            case "trackAdFailedToLoad":
+                trackAdFailedToLoad(call.arguments(), result);
+                break;
             default:
                 result.notImplemented();
                 break;
@@ -370,6 +412,9 @@ public class PurchasesFlutterPlugin implements FlutterPlugin, MethodCallHandler,
             @Nullable String purchasesAreCompletedBy, @Nullable Boolean useAmazon,
             @Nullable Boolean shouldShowInAppMessagesAutomatically, @Nullable String verificationMode,
             @Nullable Boolean pendingTransactionsForPrepaidPlansEnabled,
+            @Nullable Boolean automaticDeviceIdentifierCollectionEnabled,
+            @Nullable Boolean diagnosticsEnabled,
+            @Nullable String preferredUILocaleOverride,
             final Result result) {
         if (this.applicationContext != null) {
             PlatformInfo platformInfo = new PlatformInfo(PLATFORM_NAME, PLUGIN_VERSION);
@@ -387,7 +432,11 @@ public class PurchasesFlutterPlugin implements FlutterPlugin, MethodCallHandler,
                     new DangerousSettings(),
                     shouldShowInAppMessagesAutomatically,
                     verificationMode,
-                    pendingTransactionsForPrepaidPlansEnabled);
+                    pendingTransactionsForPrepaidPlansEnabled,
+                    diagnosticsEnabled,
+                    automaticDeviceIdentifierCollectionEnabled,
+                    preferredUILocaleOverride);
+
             setUpdatedCustomerInfoListener();
             result.success(null);
         } else {
@@ -435,6 +484,18 @@ public class PurchasesFlutterPlugin implements FlutterPlugin, MethodCallHandler,
         CommonKt.syncAttributesAndOfferingsIfNeeded(getOnResult(result));
     }
 
+    private void setAppstackAttributionParams(Map<String, Object> data, final Result result) {
+        HashMap<String, Object> filteredData = new HashMap<>();
+        if (data != null) {
+            for (Map.Entry<String, Object> entry : data.entrySet()) {
+                if (entry.getValue() != null) {
+                    filteredData.put(entry.getKey(), entry.getValue());
+                }
+            }
+        }
+        CommonKt.setAppstackAttributionParams(filteredData, getOnResult(result));
+    }
+
     private void getProductInfo(ArrayList<String> productIDs, String type, final Result result) {
         CommonKt.getProductInfo(productIDs, type, new OnResultList() {
             @Override
@@ -452,54 +513,66 @@ public class PurchasesFlutterPlugin implements FlutterPlugin, MethodCallHandler,
     private void purchaseProduct(final String productIdentifier,
             final String type,
             final String googleOldProductId,
-            @Nullable final Integer googleProrationMode,
+            @Nullable final String storeReplacementMode,
             @Nullable final Boolean googleIsPersonalizedPrice,
             @Nullable final Map<String, Object> presentedOfferingContext,
             final Result result) {
         CommonKt.purchaseProduct(
                 activity,
-                productIdentifier,
-                type,
-                null,
-                googleOldProductId,
-                googleProrationMode,
-                googleIsPersonalizedPrice,
-                presentedOfferingContext,
-                getOnResult(result));
+                productIdentifier,              // productIdentifier
+                type,                           // type
+                null,                           // googleBasePlanId
+                googleOldProductId,             // googleOldProductId
+                null,                           // googleReplacementModeInt
+                googleIsPersonalizedPrice,      // googleIsPersonalizedPrice
+                presentedOfferingContext,       // presentedOfferingContext
+                getOnResult(result),            // onResult
+                null,                           // addOnStoreProducts
+                null,                           // addOnSubscriptionOptions
+                null,                           // addOnPackages
+                storeReplacementMode);          // storeReplacementModeString
     }
 
     private void purchasePackage(final String packageIdentifier,
             final Map<String, Object> presentedOfferingContext,
             final String googleOldProductId,
-            @Nullable final Integer googleProrationMode,
+            @Nullable final String storeReplacementMode,
             @Nullable final Boolean googleIsPersonalizedPrice,
             final Result result) {
         CommonKt.purchasePackage(
                 activity,
-                packageIdentifier,
-                presentedOfferingContext,
-                googleOldProductId,
-                googleProrationMode,
-                googleIsPersonalizedPrice,
-                getOnResult(result));
+                packageIdentifier,              // packageIdentifier
+                presentedOfferingContext,       // presentedOfferingContext
+                googleOldProductId,             // googleOldProductId
+                null,                           // googleReplacementModeInt
+                googleIsPersonalizedPrice,      // googleIsPersonalizedPrice
+                getOnResult(result),            // onResult
+                null,                           // addOnStoreProducts
+                null,                           // addOnSubscriptionOptions
+                null,                           // addOnPackages
+                storeReplacementMode);          // storeReplacementModeString
     }
 
     private void purchaseSubscriptionOption(final String productIdentifier,
             final String optionIdentifier,
             final String googleOldProductId,
-            @Nullable final Integer googleProrationMode,
+            @Nullable final String storeReplacementMode,
             @Nullable final Boolean googleIsPersonalizedPrice,
             @Nullable final Map<String, Object> presentedOfferingContext,
             final Result result) {
         CommonKt.purchaseSubscriptionOption(
                 activity,
-                productIdentifier,
-                optionIdentifier,
-                googleOldProductId,
-                googleProrationMode,
-                googleIsPersonalizedPrice,
-                presentedOfferingContext,
-                getOnResult(result));
+                productIdentifier,              // productIdentifier
+                optionIdentifier,               // optionIdentifier
+                googleOldProductId,             // googleOldProductId
+                null,                           // googleReplacementModeInt
+                googleIsPersonalizedPrice,      // googleIsPersonalizedPrice
+                presentedOfferingContext,       // presentedOfferingContext
+                getOnResult(result),            // onResult
+                null,                           // addOnStoreProducts
+                null,                           // addOnSubscriptionOptions
+                null,                           // addOnPackages
+                storeReplacementMode);          // storeReplacementModeString
     }
 
     private void getAppUserID(final Result result) {
@@ -534,14 +607,22 @@ public class PurchasesFlutterPlugin implements FlutterPlugin, MethodCallHandler,
         result.success(null);
     }
 
+    @SuppressWarnings("deprecation")
     private void syncAmazonPurchase(String productID,
             String receiptID,
             String amazonUserID,
             String isoCurrencyCode,
             Double price,
+            Long purchaseTime,
             final Result result) {
-        Purchases.getSharedInstance().syncAmazonPurchase(productID, receiptID,
-                amazonUserID, isoCurrencyCode, price);
+        if (purchaseTime == null) {
+            Purchases.getSharedInstance().syncAmazonPurchase(productID, receiptID,
+                    amazonUserID, isoCurrencyCode, price);
+        } else {
+            Purchases.getSharedInstance().syncAmazonPurchase(productID, receiptID,
+                    amazonUserID, isoCurrencyCode, price, purchaseTime);
+        }
+
         result.success(null);
     }
 
@@ -552,6 +633,11 @@ public class PurchasesFlutterPlugin implements FlutterPlugin, MethodCallHandler,
 
     private void setProxyURLString(String proxyURLString, final Result result) {
         CommonKt.setProxyURLString(proxyURLString);
+        result.success(null);
+    }
+
+    private void overridePreferredUILocale(@Nullable String locale, final Result result) {
+        CommonKt.overridePreferredLocale(locale);
         result.success(null);
     }
 
@@ -660,6 +746,11 @@ public class PurchasesFlutterPlugin implements FlutterPlugin, MethodCallHandler,
 
     private void setAirshipChannelID(String airshipChannelID, final Result result) {
         SubscriberAttributesKt.setAirshipChannelID(airshipChannelID);
+        result.success(null);
+    }
+
+    private void setPostHogUserID(String postHogUserID, final Result result) {
+        SubscriberAttributesKt.setPostHogUserID(postHogUserID);
         result.success(null);
     }
 
@@ -789,6 +880,42 @@ public class PurchasesFlutterPlugin implements FlutterPlugin, MethodCallHandler,
 
     private void getCachedVirtualCurrencies(final Result result) {
         result.success(CommonKt.getCachedVirtualCurrencies());
+    }
+
+    private void trackCustomPaywallImpression(Map<String, Object> arguments, final Result result) {
+        HashMap<String, Object> data = new HashMap<>();
+        for (Map.Entry<String, Object> entry : arguments.entrySet()) {
+            if (entry.getValue() != null) {
+                data.put(entry.getKey(), entry.getValue());
+            }
+        }
+        CommonKt.trackCustomPaywallImpression(data);
+        result.success(null);
+    }
+
+    private void trackAdDisplayed(Map<String, Object> arguments, final Result result) {
+        CommonKt.trackAdDisplayed(arguments);
+        result.success(null);
+    }
+
+    private void trackAdOpened(Map<String, Object> arguments, final Result result) {
+        CommonKt.trackAdOpened(arguments);
+        result.success(null);
+    }
+
+    private void trackAdLoaded(Map<String, Object> arguments, final Result result) {
+        CommonKt.trackAdLoaded(arguments);
+        result.success(null);
+    }
+
+    private void trackAdRevenue(Map<String, Object> arguments, final Result result) {
+        CommonKt.trackAdRevenue(arguments);
+        result.success(null);
+    }
+
+    private void trackAdFailedToLoad(Map<String, Object> arguments, final Result result) {
+        CommonKt.trackAdFailedToLoad(arguments);
+        result.success(null);
     }
 
     private void runOnUiThread(Runnable runnable) {

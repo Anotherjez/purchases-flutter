@@ -1,16 +1,16 @@
 group 'com.revenuecat.purchases_ui_flutter'
-version '9.1.0'
+version '10.2.3'
 
 buildscript {
     ext.kotlin_version = '1.9.20'
-    ext.common_version = '16.1.0'
+    ext.common_version = '18.14.1'
     repositories {
         google()
         mavenCentral()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.11.1'
+        classpath 'com.android.tools.build:gradle:8.13.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -46,6 +46,9 @@ android {
     defaultConfig {
         minSdkVersion 24
         compileSdk 34
+        // Fix variant resolution for purchases-android local builds
+        missingDimensionStrategy 'apis', 'defaults'
+        missingDimensionStrategy 'billingclient', 'bc8'
     }
     
     dependencies {

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
@@ -9,8 +10,12 @@ import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
 
 import 'cats.dart';
 import 'constant.dart';
+import 'custom_variables_editor.dart';
+import 'customer_center_view_screen.dart';
 import 'initial.dart';
 import 'paywall.dart';
+import 'product_change_testing_screen.dart';
+import 'custom_paywall_impression_testing_screen.dart';
 import 'winback_testing_screen.dart';
 import 'virtual_currency_testing_screen.dart';
 
@@ -25,6 +30,15 @@ class _UpsellScreenState extends State<UpsellScreen> {
   String? _appUserId;
   Offerings? _offerings;
   CustomerInfo? _customerInfo;
+  Map<String, dynamic> _customVariables = {};
+
+  Map<String, CustomVariableValue>? _getCustomVariablesForPaywall() {
+    if (_customVariables.isEmpty) return null;
+    return _customVariables.map(
+      (key, value) =>
+          MapEntry(key, CustomVariableValue.string(value.toString())),
+    );
+  }
 
   @override
   void initState() {
@@ -67,10 +81,94 @@ class _UpsellScreenState extends State<UpsellScreen> {
     });
   }
 
+  Future<PaywallPresentationConfiguration?> _choosePresentationConfiguration(
+      BuildContext context) {
+    return showCupertinoModalPopup<PaywallPresentationConfiguration>(
+      context: context,
+      builder: (context) => CupertinoActionSheet(
+        title: const Text('Presentation Style'),
+        message: const Text('How should the paywall be presented on iOS?'),
+        actions: [
+          CupertinoActionSheetAction(
+            onPressed: () => Navigator.pop(
+              context,
+              const PaywallPresentationConfiguration(
+                ios: IOSPaywallPresentationStyle.sheet,
+              ),
+            ),
+            child: const Text('Sheet (default)'),
+          ),
+          CupertinoActionSheetAction(
+            onPressed: () => Navigator.pop(
+              context,
+              const PaywallPresentationConfiguration(
+                ios: IOSPaywallPresentationStyle.fullScreen,
+              ),
+            ),
+            child: const Text('Full Screen'),
+          ),
+        ],
+        cancelButton: CupertinoActionSheetAction(
+          onPressed: () => Navigator.pop(context),
+          isDestructiveAction: false,
+          child: const Text('Cancel'),
+        ),
+      ),
+    );
+  }
+
+  void _openCustomVariablesEditor() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CustomVariablesEditor(
+          variables: _customVariables,
+          onVariablesChanged: (variables) {
+            setState(() {
+              _customVariables = variables;
+            });
+          },
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Upsell Screen')),
+      appBar: AppBar(
+        title: const Text('Upsell Screen'),
+        actions: [
+          Stack(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.code),
+                onPressed: _openCustomVariablesEditor,
+                tooltip: 'Custom Variables',
+              ),
+              if (_customVariables.isNotEmpty)
+                Positioned(
+                  right: 8,
+                  top: 8,
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: const BoxDecoration(
+                      color: Colors.red,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Text(
+                      '${_customVariables.length}',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ],
+      ),
       body: _offerings == null
           ? const Center(child: CircularProgressIndicator())
           : _buildUpsell(context),
@@ -79,13 +177,22 @@ class _UpsellScreenState extends State<UpsellScreen> {
 
   Widget _buildUpsell(BuildContext context) {
     final currentOfferingId = _offerings?.current?.identifier;
+    // Sort offerings by identifier (key) for stable ordering, case-insensitive
+    // Put current/default offering first
+    final sortedOfferings = _offerings!.all.entries.toList()
+      ..sort((a, b) {
+        // Current offering always comes first
+        if (a.key == currentOfferingId) return -1;
+        if (b.key == currentOfferingId) return 1;
+        // Otherwise sort alphabetically
+        return a.key.toLowerCase().compareTo(b.key.toLowerCase());
+      });
+
     return ListView(children: [
       if (_customerInfo != null)
         ListTile(
           title: const Text('Active Entitlements'),
-          trailing: Text(
-            '${_customerInfo!.entitlements.active.keys}'
-          ),
+          trailing: Text('${_customerInfo!.entitlements.active.keys}'),
         ),
       if (_appUserId != null)
         ListTile(
@@ -93,7 +200,7 @@ class _UpsellScreenState extends State<UpsellScreen> {
           trailing: Text(_appUserId!),
         ),
       const Divider(),
-      ..._offerings!.all.entries
+      ...sortedOfferings
           .map((entry) => ExpansionTile(
                 title: Text("Offering ID: ${entry.key} "
                         "${entry.key == currentOfferingId ? '(Current)' : ''}"
@@ -109,6 +216,19 @@ class _UpsellScreenState extends State<UpsellScreen> {
                 padding: const EdgeInsets.all(8.0),
                 child: Column(children: [
                   const Text("Purchase Methods"),
+                  const SizedBox(height: 12),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const CustomPaywallImpressionTestingScreen(),
+                        ),
+                      );
+                    },
+                    child: const Text("Custom Paywall Impression Testing"),
+                  ),
+                  const SizedBox(height: 12),
                   ElevatedButton(
                     onPressed: () async {
                       final offerings =
@@ -118,6 +238,63 @@ class _UpsellScreenState extends State<UpsellScreen> {
                       });
                     },
                     child: const Text('Sync Attributes and Offerings'),
+                  ),
+                  ShowPromptButton(
+                    title: "Set Appstack Attribution Params",
+                    hintText: "appstack_id=test_id,appstack_campaign=test",
+                    onTextSubmitted: (text) async {
+                      try {
+                        final data = <String, String>{};
+                        if (text.isNotEmpty) {
+                          for (final pair in text.split(',')) {
+                            final parts = pair.split('=');
+                            if (parts.length == 2) {
+                              data[parts[0].trim()] = parts[1].trim();
+                            }
+                          }
+                        }
+                        final offerings =
+                            await Purchases.setAppstackAttributionParams(data);
+                        setState(() {
+                          _offerings = offerings;
+                        });
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                  'Success! ${offerings.all.length} offerings'),
+                            ),
+                          );
+                        }
+                      } catch (e) {
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Error: $e')),
+                          );
+                        }
+                      }
+                    },
+                  ),
+                ]))),
+      ),
+      Padding(
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        child: Card(
+            margin: const EdgeInsets.all(8.0),
+            child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(children: [
+                  const Text("Product Change Testing"),
+                  ElevatedButton(
+                    onPressed: () async {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                const ProductChangeTestingScreen(),
+                          ));
+                    },
+                    child: const Text("Go to Product Change Testing Screen"),
                   ),
                 ]))),
       ),
@@ -171,8 +348,41 @@ class _UpsellScreenState extends State<UpsellScreen> {
                 child: Column(children: [
                   const Text("Customer Center"),
                   ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const CustomerCenterViewModalScreen(),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                        "CustomerCenterViewModalScreen (Close Button)"),
+                  ),
+                  const SizedBox(height: 12),
+                  ElevatedButton(
                     onPressed: () async {
-                      await RevenueCatUI.presentCustomerCenter();
+                      await RevenueCatUI.presentCustomerCenter(
+                        onRestoreStarted: () => debugPrint(
+                            '[CustomerCenter Modal] Restore started'),
+                        onRestoreCompleted: (customerInfo) => debugPrint(
+                            '[CustomerCenter Modal] Restore completed: ${customerInfo.originalAppUserId}'),
+                        onRestoreFailed: (error) => debugPrint(
+                            '[CustomerCenter Modal] Restore failed: ${error.message}'),
+                        onShowingManageSubscriptions: () => debugPrint(
+                            '[CustomerCenter Modal] Showing manage subscriptions'),
+                        onRefundRequestStarted: (productId) => debugPrint(
+                            '[CustomerCenter Modal] Refund request started for product: $productId'),
+                        onRefundRequestCompleted: (productId, status) => debugPrint(
+                            '[CustomerCenter Modal] Refund request completed for product $productId with status $status'),
+                        onFeedbackSurveyCompleted: (optionId) => debugPrint(
+                            '[CustomerCenter Modal] Feedback survey completed with option: $optionId'),
+                        onManagementOptionSelected: (optionId, url) => debugPrint(
+                            '[CustomerCenter Modal] Management option selected: $optionId (url: ${url ?? 'none'})'),
+                        onCustomActionSelected:
+                            (actionId, purchaseIdentifier) => debugPrint(
+                                '[CustomerCenter Modal] Custom action selected: $actionId (purchase: ${purchaseIdentifier ?? 'none'})'),
+                      );
                     },
                     child: const Text("Present Customer Center"),
                   ),
@@ -223,18 +433,28 @@ class _UpsellScreenState extends State<UpsellScreen> {
                   const Text("Paywalls"),
                   ElevatedButton(
                     onPressed: () async {
-                      final paywallResult =
-                          await RevenueCatUI.presentPaywall(offering: offering);
+                      final config = await _choosePresentationConfiguration(context);
+                      if (config == null) return;
+                      final paywallResult = await RevenueCatUI.presentPaywall(
+                        offering: offering,
+                        customVariables: _getCustomVariablesForPaywall(),
+                        presentationConfiguration: config,
+                      );
                       log('Paywall result: $paywallResult');
                     },
                     child: const Text('Present paywall'),
                   ),
                   ElevatedButton(
                     onPressed: () async {
+                      final config = await _choosePresentationConfiguration(context);
+                      if (config == null) return;
                       final paywallResult =
                           await RevenueCatUI.presentPaywallIfNeeded(
-                              entitlementKey,
-                              offering: offering);
+                        entitlementKey,
+                        offering: offering,
+                        customVariables: _getCustomVariablesForPaywall(),
+                        presentationConfiguration: config,
+                      );
                       log('Paywall result: $paywallResult');
                     },
                     child: const Text(
@@ -247,10 +467,35 @@ class _UpsellScreenState extends State<UpsellScreen> {
                         MaterialPageRoute(
                             builder: (context) => PaywallScreen(
                                   offering: offering,
+                                  customVariables:
+                                      _getCustomVariablesForPaywall(),
                                 )),
                       );
                     },
                     child: const Text('Show paywall view'),
+                  ),
+                  ElevatedButton(
+                    onPressed: purchasesAreCompletedByMyApp
+                        ? () async {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => PaywallScreen(
+                                        offering: offering,
+                                        customVariables:
+                                            _getCustomVariablesForPaywall(),
+                                        purchaseLogic: SamplePurchaseLogic(),
+                                      )),
+                            );
+                          }
+                        : null,
+                    child: Text(
+                      purchasesAreCompletedByMyApp
+                          ? 'Show paywall view with custom PurchaseLogic'
+                          : 'Show paywall view with custom PurchaseLogic\n'
+                              '(Enable purchasesAreCompletedByMyApp)',
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                   ElevatedButton(
                     onPressed: () async {
@@ -272,7 +517,9 @@ class _UpsellScreenState extends State<UpsellScreen> {
                               placement);
                       if (offering != null) {
                         final paywallResult = await RevenueCatUI.presentPaywall(
-                            offering: offering);
+                          offering: offering,
+                          customVariables: _getCustomVariablesForPaywall(),
+                        );
                         log('Paywall result: $paywallResult');
                       } else {
                         log('No offering to show');
@@ -307,9 +554,10 @@ class _PurchaseButton extends StatelessWidget {
 
   Future<void> _purchasePackage(BuildContext context, Package package) async {
     try {
-      final purchaseResult = await Purchases.purchasePackage(package);
-      final isPro = purchaseResult.customerInfo.entitlements
-        .active.containsKey(entitlementKey);
+      final purchaseParams = PurchaseParams.package(package);
+      final purchaseResult = await Purchases.purchase(purchaseParams);
+      final isPro = purchaseResult.customerInfo.entitlements.active
+          .containsKey(entitlementKey);
       print("StoreTransaction: ${purchaseResult.storeTransaction}");
       if (isPro) {
         Navigator.pushReplacement(
@@ -359,8 +607,8 @@ class _PurchaseStoreProductButton extends StatelessWidget {
       BuildContext context, StoreProduct storeProduct) async {
     try {
       final purchaseResult = await Purchases.purchaseStoreProduct(storeProduct);
-      final isPro = purchaseResult.customerInfo.entitlements
-        .active.containsKey(entitlementKey);
+      final isPro = purchaseResult.customerInfo.entitlements.active
+          .containsKey(entitlementKey);
       if (isPro) {
         Navigator.pushReplacement(
           context,
@@ -434,9 +682,13 @@ class _PurchaseSubscriptionOptionButton extends StatelessWidget {
 class ShowPromptButton extends StatefulWidget {
   final String title;
   final Function(String) onTextSubmitted;
+  final String hintText;
 
   const ShowPromptButton(
-      {Key? key, required this.title, required this.onTextSubmitted})
+      {Key? key,
+      required this.title,
+      required this.onTextSubmitted,
+      this.hintText = 'Text here'})
       : super(key: key);
 
   @override
@@ -454,7 +706,7 @@ class _ShowPromptButtonState extends State<ShowPromptButton> {
           title: Text(widget.title),
           content: TextField(
             controller: _textFieldController,
-            decoration: const InputDecoration(hintText: "Text here"),
+            decoration: InputDecoration(hintText: widget.hintText),
           ),
           actions: <Widget>[
             ElevatedButton(
