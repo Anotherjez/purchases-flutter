@@ -143,6 +143,12 @@ class Purchases {
   static Future<void> configure(
     PurchasesConfiguration purchasesConfiguration,
   ) async {
+    if (defaultTargetPlatform == TargetPlatform.windows) {
+      debugPrint(
+        'purchases_flutter: Windows support is limited. Using simulated configuration.',
+      );
+    }
+
     var purchasesCompletedByToUse = PurchasesAreCompletedByType.revenueCat;
     var storeKitVersionToUse = purchasesConfiguration.storeKitVersion ??
         StoreKitVersion.defaultVersion;
@@ -746,6 +752,12 @@ class Purchases {
   ///
   /// [newAppUserID] The appUserID that should be linked to the currently user
   static Future<LogInResult> logIn(String appUserID) async {
+    if (defaultTargetPlatform == TargetPlatform.windows) {
+      debugPrint(
+        'purchases_flutter: Windows support is limited. Using simulated response.',
+      );
+    }
+
     final result =
         await _channel.invokeMethod('logIn', {'appUserID': appUserID});
     final customerInfo = CustomerInfo.fromJson(
